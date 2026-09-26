@@ -106,7 +106,7 @@ function o.bind(keys, description, dispatcher, options)
 end
 
 function o.launch(command)
-  return "uwsm-app -- " .. command
+  return command
 end
 
 function o.exec_on_start(command)

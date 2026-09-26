@@ -147,7 +147,7 @@ PY
 fi
 
 echo "Opening Hermes Desktop..."
-setsid uwsm-app -- /usr/bin/hermes-desktop >/dev/null 2>&1 &
+setsid /usr/bin/hermes-desktop >/dev/null 2>&1 &
 
 # Only a running Hermes can be told which skin to show; a unit outlives this
 # terminal and reports to the journal.

@@ -4,4 +4,4 @@
 # omarchy:args=<application-name> [application-args...]
 
 pkill -x $1
-setsid uwsm-app -- "$@" >/dev/null 2>&1 &
+setsid "$@" >/dev/null 2>&1 &

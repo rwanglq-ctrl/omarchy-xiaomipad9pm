@@ -9,7 +9,7 @@ echo "Installing Spotify..."
 omarchy-pkg-add spotify
 
 echo "Opening Spotify..."
-setsid uwsm-app -- /usr/bin/spotify >/dev/null 2>&1 &
+setsid /usr/bin/spotify >/dev/null 2>&1 &
 
 echo ""
 echo "Spotify has been installed."

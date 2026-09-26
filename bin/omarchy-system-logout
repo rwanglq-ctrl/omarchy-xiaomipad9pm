@@ -4,7 +4,8 @@
 # omarchy:examples=omarchy logout | omarchy system logout
 # omarchy:aliases=omarchy logout
 
-nohup bash -c "sleep 2 && uwsm stop" >/dev/null 2>&1 &
+# ARM 容器移植：没有 uwsm，直接退出 Hyprland（宿主随后切回 Debian 桌面）
+nohup bash -c "sleep 2 && hyprctl dispatch 'hl.dsp.exit()'" >/dev/null 2>&1 &
 
 omarchy-osd -i logout -m "Logging out" -d 5000
 

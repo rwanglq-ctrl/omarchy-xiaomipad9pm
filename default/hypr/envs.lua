@@ -33,7 +33,24 @@ for entry in (os.getenv("PATH") or "/usr/local/bin:/usr/bin"):gmatch("[^:]+") do
   if entry ~= bin_dir then table.insert(kept, entry) end
 end
 table.insert(kept, 1, bin_dir)
+-- ARM 容器移植：原来经 uwsm 读 env-bootstrap 追加的用户目录
+local local_bin = paths.home .. "/.local/bin"
+local have_local = false
+for _, e in ipairs(kept) do if e == local_bin then have_local = true end end
+if not have_local then table.insert(kept, local_bin) end
 hl.env("PATH", table.concat(kept, ":"))
+
+-- ARM 容器移植：没有 uwsm / systemd --user，原本由 default/uwsm/default 和
+-- default/environment.d/10-omarchy-fcitx.conf 提供的会话变量改在这里设置。
+hl.env("TERMINAL", "xdg-terminal-exec")
+hl.env("EDITOR", "omarchy-launch-editor --inline")
+hl.env("INPUT_METHOD", "fcitx")
+hl.env("QT_IM_MODULE", "fcitx")
+hl.env("XMODIFIERS", "@im=fcitx")
+hl.env("SDL_IM_MODULE", "fcitx")
+-- D-Bus 会话总线属于宿主：gsettings 默认会经总线交给宿主的 dconf-service，
+-- 写进宿主的配置。改用本地 keyfile（~/.config/glib-2.0/settings/keyfile）。
+hl.env("GSETTINGS_BACKEND", "keyfile")
 
 -- Hardware-specific environment.
 require("default.hypr.nvidia")

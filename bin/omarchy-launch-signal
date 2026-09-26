@@ -9,7 +9,7 @@ WINDOW_ADDRESS=$(hyprctl clients -j | jq -r '.[]|select((.class|test("\\bsignal\
 if [[ -n $WINDOW_ADDRESS ]]; then
   hyprctl dispatch "hl.dsp.focus({ window = \"address:$WINDOW_ADDRESS\" })" >/dev/null 2>&1 || hyprctl dispatch focuswindow "address:$WINDOW_ADDRESS"
 elif [[ -x /usr/bin/signal-desktop ]]; then
-  exec setsid uwsm-app -- /usr/bin/signal-desktop
+  exec setsid /usr/bin/signal-desktop
 else
   exec omarchy-launch-floating-terminal-with-presentation omarchy-install-service-signal
 fi

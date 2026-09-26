@@ -29,6 +29,6 @@ nvim | vim | nano | micro | hx | helix | fresh)
   fi
   ;;
 *)
-  exec setsid uwsm-app -- "$editor" "$@"
+  exec setsid "$editor" "$@"
   ;;
 esac

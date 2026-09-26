@@ -4,9 +4,9 @@
 # omarchy:examples=omarchy shutdown | omarchy system shutdown
 # omarchy:aliases=omarchy shutdown
 
-# Schedule the shutdown in the user manager so closing the terminal's systemd
-# scope cannot terminate it before it runs.
-systemd-run --user --collect --quiet --on-active="2s" --timer-property=AccuracySec=100ms systemctl poweroff --no-wall || exit 1
+# ARM 容器移植：容器里没有 systemd，不能关机/重启；改为退出 Hyprland，
+# 由宿主切回 Debian 桌面。
+nohup bash -c "sleep 2 && hyprctl dispatch 'hl.dsp.exit()'" >/dev/null 2>&1 &
 
 omarchy-osd -i shutdown -m "Shutting down" -d 5000
 

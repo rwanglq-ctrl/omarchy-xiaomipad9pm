@@ -1171,7 +1171,7 @@ install_windows() {
 [Desktop Entry]
 Name=Windows
 Comment=Start Windows VM via Docker and connect with RDP
-Exec=uwsm app -- omarchy-windows-vm launch
+Exec=omarchy-windows-vm launch
 Icon=windows
 Terminal=false
 Type=Application

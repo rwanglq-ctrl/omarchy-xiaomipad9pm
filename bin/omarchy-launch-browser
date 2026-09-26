@@ -17,9 +17,8 @@ else
   private_flag="--incognito"
 fi
 
-systemd-run --user --quiet --collect --unit="omarchy-browser-$(date +%s%N)" \
-  --property=StandardOutput=null --property=StandardError=null \
-  uwsm-app -- "$browser_exec" "${@/--private/$private_flag}"
+# ARM 容器移植：没有 systemd --user，直接脱离终端启动
+setsid "$browser_exec" "${@/--private/$private_flag}" >/dev/null 2>&1 &
 
 url=""
 for argument in "$@"; do

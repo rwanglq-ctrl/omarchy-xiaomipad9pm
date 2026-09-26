@@ -14,9 +14,13 @@
 # A package upgrade rewriting $OMARCHY_PATH/shell would otherwise reload it
 # against a half-written tree, and that failed reload leaves a second engine
 # generation behind that turns the next restart's IPC kill into a crash.
+# ARM 容器移植：没有 journald，日志写到 ~/.local/state/omarchy/shell.log
+shell_log="${XDG_STATE_HOME:-$HOME/.local/state}/omarchy/shell.log"
+mkdir -p "${shell_log%/*}"
+
 run_shell() {
   QS_DISABLE_FILE_WATCHER=1 QS_NO_RELOAD_POPUP=1 \
-    systemd-cat -t omarchy-shell -- quickshell -n -p "$OMARCHY_PATH/shell" &
+    quickshell -n -p "$OMARCHY_PATH/shell" >>"$shell_log" 2>&1 &
   shell_pid=$!
 
   local status
@@ -82,10 +86,10 @@ while true; do
   fi
 
   if (( ++attempts > 5 )); then
-    logger -t omarchy-shell "Giving up on the Omarchy shell after $attempts relaunches in under a minute."
+    echo "$(date "+%F %T") Giving up on the Omarchy shell after $attempts relaunches in under a minute." >>"$shell_log"
     exit 1
   fi
 
-  logger -t omarchy-shell "Omarchy shell exited with status $status; relaunching."
+  echo "$(date "+%F %T") Omarchy shell exited with status $status; relaunching." >>"$shell_log"
   sleep 1
 done

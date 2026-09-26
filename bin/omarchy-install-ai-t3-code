@@ -25,7 +25,7 @@ omarchy-theme-set-t3code
 t3 theme set omarchy --base-dir "$T3CODE_HOME"
 
 echo "Opening T3 Code..."
-setsid uwsm-app -- gtk-launch t3code >/dev/null 2>&1 &
+setsid gtk-launch t3code >/dev/null 2>&1 &
 
 echo ""
 echo "T3 Code has been installed."

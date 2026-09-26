@@ -105,7 +105,8 @@ Item {
       anchors.fill: wallpaper
       source: wallpaper
       autoPaddingEnabled: false
-      blurEnabled: root.loadBackground && wallpaper.status === Image.Ready
+      // ARM 容器移植：llvmpipe 纯 CPU 渲染，关掉锁屏背景模糊
+      blurEnabled: false
       blur: 1.0
       blurMax: 128
       blurMultiplier: 1.25
