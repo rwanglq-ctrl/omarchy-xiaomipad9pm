@@ -11,7 +11,8 @@ hl.on("hyprland.start", function()
 
   -- 原本由 systemd 用户服务常驻的程序，改由 Hyprland 启动时拉起（等同 exec-once）。
   -- omarchy-fcitx5.service
-  hl.exec_cmd("fcitx5 -d --replace --disable notificationitem")
+  -- fcitx5-autostart（从 Debian 移植）：等 Wayland 就绪、确认有 wayland 前端、再刷新焦点
+  hl.exec_cmd("$HOME/.local/bin/fcitx5-autostart")
   -- omarchy-migrate-notify.service
   hl.exec_cmd("sleep 5 && omarchy-migrate-notify")
 
