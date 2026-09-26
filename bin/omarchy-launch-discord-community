@@ -5,7 +5,7 @@
 invite="https://discord.gg/tXFUdasqhY"
 
 if omarchy-cmd-present discord; then
-  exec setsid uwsm-app -- discord --url -- "discord://-/invite/${invite##*/}"
+  exec setsid discord --url -- "discord://-/invite/${invite##*/}"
 else
   exec omarchy-launch-webapp "$invite"
 fi

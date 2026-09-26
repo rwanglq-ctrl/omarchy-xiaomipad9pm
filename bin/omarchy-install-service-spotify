@@ -10,7 +10,7 @@ if omarchy-hw-x86; then
   omarchy-pkg-add spotify
 
   echo "Opening Spotify..."
-  setsid uwsm-app -- /usr/bin/spotify >/dev/null 2>&1 &
+  setsid /usr/bin/spotify >/dev/null 2>&1 &
 else
   # Spotify builds its Linux client for x86_64 only (its repository serves amd64
   # and i386), so ARM gets the web player, which Chromium plays with the Widevine

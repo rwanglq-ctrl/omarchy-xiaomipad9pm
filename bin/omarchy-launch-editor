@@ -32,6 +32,7 @@ nvim | vim | nano | micro | hx | helix | fresh)
   fi
   ;;
 *)
-  exec setsid uwsm-app -- "$editor" -- "$@"
+  # ARM 容器移植：没有 uwsm，直接脱离终端启动
+  exec setsid "$editor" -- "$@"
   ;;
 esac

@@ -17,10 +17,13 @@ if (( $# > 2 )); then
 fi
 
 action=${1:-}
+# ARM 容器移植：容器里没有 systemd，不能 logout/reboot/shutdown；统一改为
+# 退出 Hyprland 回到宿主 Debian 桌面（由宿主侧再决定重启/关机）。
+exit_to_host=(nohup bash -c "sleep 2 && hyprctl dispatch 'hl.dsp.exit()'")
 case $action in
-  logout) command=(uwsm stop) ;;
-  reboot) command=(systemctl reboot --no-wall) ;;
-  shutdown) command=(systemctl poweroff --no-wall) ;;
+  logout) command=("${exit_to_host[@]}") ;;
+  reboot) command=("${exit_to_host[@]}") ;;
+  shutdown) command=("${exit_to_host[@]}") ;;
   *) echo "$usage" >&2; exit 2 ;;
 esac
 

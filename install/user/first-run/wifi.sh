@@ -47,5 +47,5 @@ announce_network() {
   update_pending && notify_update
 }
 
-# Detached, so a slow or absent connection never holds up the rest of first run.
-announce_network &
+# ARM 容器移植：网络由宿主负责，没有 NetworkManager（nm-online），只提示更新。
+notify_update &

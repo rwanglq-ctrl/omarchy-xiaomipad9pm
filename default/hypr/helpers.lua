@@ -157,7 +157,7 @@ function o.rebind(keys, description, dispatcher, options)
 end
 
 function o.launch(command)
-  return "uwsm-app -- " .. command
+  return command
 end
 
 -- The command each function bind stands for, so the keybindings menu can still

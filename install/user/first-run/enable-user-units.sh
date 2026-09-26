@@ -13,6 +13,12 @@ set -euo pipefail
 
 omarchy-input-method configure --defaults || echo "Input method defaults deferred; run omarchy setup input after login." >&2
 
+# ARM 容器移植：容器里没有 systemd --user，以下用户单元全部跳过。
+# 需要的（fcitx5、omarchy-migrate-notify）已改到 default/hypr/autostart.lua
+# 用 Hyprland 启动；其余（蓝牙配对、睡眠锁、内置屏恢复、崩溃监控）依赖
+# bluez / logind / journald，在容器里不适用。
+exit 0
+
 systemctl --user daemon-reload
 
 # One at a time: given a list, systemctl enables none of it when it cannot find
