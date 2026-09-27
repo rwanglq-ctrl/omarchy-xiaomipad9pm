@@ -146,7 +146,11 @@ systemctl --user daemon-reload
 - [Arch Linux ARM](https://archlinuxarm.org/) — aarch64 发行版
 - [Hyprland](https://hyprland.org/) — Wayland 合成器
 - [fcitx5](https://fcitx5.org/) + [Rime](https://rime.im/) + 雾凇拼音 — 中文输入方案
-- [Xiaomi Pad 9 Pro Max](https://www.mi.com/prod/xiaomi-pad-9-pro-max) — 本项目的测试设备，采用 Xiaomi XRING O3 最新旗舰处理器
+- [Xiaomi Pad 9 Pro Max](https://www.mi.com/prod/xiaomi-pad-9-pro-max) — 本项目的测试设备，采用 Xiaomi XRING O3 最新旗舰 AI 处理器
+- **安装配置**：使用 [Claude Code](https://claude.com/claude-code) agent + [Claude Opus 5.5](https://www.anthropic.com/claude-opus-5-5) 模型完成
+- **GitHub 发布**：使用 [Orca](https://www.onorca.dev/) ADE（[GitHub](https://github.com/stablyai/orca)）协调多个 agent 并行完成——
+  [Claude Code](https://claude.com/claude-code)、[Codex](https://github.com/openai/codex)、[Pi](https://pi.dev)、
+  [MiMo Code](https://mimo.xiaomi.com/coder)，以及 [MiMo-V2.6-Pro-UltraSpeed](https://mimo.mi.com/models/en-US/mimo-v2.6-pro-ultraspeed) 模型
 
 ---
 
@@ -155,7 +159,7 @@ systemctl --user daemon-reload
 **Omarchy v4.0.4 on Arch Linux ARM (aarch64), running in a systemd-nspawn container on the
 Debian 13 VM of Android 16's Linux Terminal, and shown on its display through seatd.**
 
-**Tested device**: [Xiaomi Pad 9 Pro Max](https://www.mi.com/prod/xiaomi-pad-9-pro-max), powered by Xiaomi's latest flagship XRING O3 processor (Android 16 Linux Terminal, Debian 13 aarch64).
+**Tested device**: [Xiaomi Pad 9 Pro Max](https://www.mi.com/prod/xiaomi-pad-9-pro-max), powered by Xiaomi's latest flagship AI processor, the XRING O3 (Android 16 Linux Terminal, Debian 13 aarch64).
 
 ### Requirements
 
@@ -217,4 +221,10 @@ and checks that a second run changes nothing (run it from the *Actions* tab).
 
 Details: [docs/](docs/) (in Chinese). License: [MIT](LICENSE). Built on
 [Omarchy](https://github.com/basecamp/omarchy) by Basecamp.
-Thanks to the [Xiaomi Pad 9 Pro Max](https://www.mi.com/prod/xiaomi-pad-9-pro-max) with Xiaomi's latest flagship XRING O3 processor, the device this project was built and tested on.
+Thanks to the [Xiaomi Pad 9 Pro Max](https://www.mi.com/prod/xiaomi-pad-9-pro-max) with Xiaomi's latest flagship AI processor, the XRING O3, the device this project was built and tested on.
+The installation and configuration were done with the [Claude Code](https://claude.com/claude-code) agent and
+the [Claude Opus 5.5](https://www.anthropic.com/claude-opus-5-5) model. The GitHub release was built with the
+[Orca](https://www.onorca.dev/) ADE ([GitHub](https://github.com/stablyai/orca)) coordinating
+[Claude Code](https://claude.com/claude-code), [Codex](https://github.com/openai/codex), [Pi](https://pi.dev) and
+[MiMo Code](https://mimo.xiaomi.com/coder) in parallel, together with the
+[MiMo-V2.6-Pro-UltraSpeed](https://mimo.mi.com/models/en-US/mimo-v2.6-pro-ultraspeed) model.
