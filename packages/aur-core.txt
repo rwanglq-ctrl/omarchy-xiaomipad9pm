@@ -1,0 +1,5 @@
+# aur-core; full files are additive to core.
+rime-ice-git
+ttf-ia-writer
+yaru-icon-theme
+yay

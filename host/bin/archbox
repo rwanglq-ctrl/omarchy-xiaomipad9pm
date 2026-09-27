@@ -1,0 +1,19 @@
+#!/bin/sh
+# Installed by omarchy-alarm-nspawn (host/install.sh); @PLACEHOLDERS@ are filled in at install time.
+# Enter the Arch Linux ARM nspawn container as @USER@ (Wayland/GPU passed through).
+# Usage: archbox [cmd args...]   — no arguments gives a login shell.
+homebinds=""
+# shellcheck disable=SC2043  # the list is filled in at install time
+for d in @HOME_BIND_DIRS@; do
+  [ -d "@HOME@/$d" ] && homebinds="$homebinds --bind=@HOME@/$d:@CHOME@/$d"
+done
+# $homebinds is intentionally unquoted so it splits into separate --bind options.
+# shellcheck disable=SC2086
+exec sudo SYSTEMD_NSPAWN_LOCK=0 systemd-nspawn -q -D '@ROOTFS@' --register=no --resolv-conf=copy-host \
+  -u '@USER@' --chdir='@CHOME@' \
+  --bind=/dev/dri --property=DeviceAllow='char-drm rw' \
+  --bind=/run/user/@UID@:/run/user/@UID@ \
+  $homebinds \
+  --setenv=XDG_RUNTIME_DIR=/run/user/@UID@ --setenv=WAYLAND_DISPLAY="${WAYLAND_DISPLAY:-wayland-1}" \
+  --setenv=TERM="${TERM:-xterm-256color}" --setenv=LANG=en_US.UTF-8 \
+  "$@"

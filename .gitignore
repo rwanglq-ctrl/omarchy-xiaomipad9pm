@@ -1,0 +1,35 @@
+# Logs
+*.log
+logs/
+
+# Backup files
+*.bak
+*.bak.*
+*~
+backup/
+backups/
+
+# Build directories
+build/
+_build/
+target/
+
+# Cache
+.cache/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Temporary files
+tmp/
+tmp.*

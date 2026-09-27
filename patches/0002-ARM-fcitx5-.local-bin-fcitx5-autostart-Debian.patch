@@ -1,0 +1,31 @@
+From 5fc3d90c8f3ce6c750f0f79404c3dcfefd5ccd1c Mon Sep 17 00:00:00 2001
+From: omarchy-alarm-nspawn contributors <noreply@example.com>
+Date: Sat, 26 Sep 2026 06:14:34 -0400
+Subject: [PATCH 2/2] =?UTF-8?q?ARM=20=E5=AE=B9=E5=99=A8=E7=A7=BB=E6=A4=8D?=
+ =?UTF-8?q?=EF=BC=9Afcitx5=20=E6=94=B9=E7=94=A8=20~/.local/bin/fcitx5-auto?=
+ =?UTF-8?q?start=EF=BC=88=E4=BB=8E=20Debian=20=E7=A7=BB=E6=A4=8D=EF=BC=89?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ default/hypr/autostart.lua | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/default/hypr/autostart.lua b/default/hypr/autostart.lua
+index ef301d7..7df721b 100644
+--- a/default/hypr/autostart.lua
++++ b/default/hypr/autostart.lua
+@@ -11,7 +11,8 @@ hl.on("hyprland.start", function()
+ 
+   -- 原本由 systemd 用户服务常驻的程序，改由 Hyprland 启动时拉起（等同 exec-once）。
+   -- omarchy-fcitx5.service
+-  hl.exec_cmd("fcitx5 -d --replace --disable notificationitem")
++  -- fcitx5-autostart（从 Debian 移植）：等 Wayland 就绪、确认有 wayland 前端、再刷新焦点
++  hl.exec_cmd("$HOME/.local/bin/fcitx5-autostart")
+   -- omarchy-migrate-notify.service
+   hl.exec_cmd("sleep 5 && omarchy-migrate-notify")
+ 
+-- 
+2.55.0
+

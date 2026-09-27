@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -euo pipefail
+# Run a program on the Debian host (its systemd --user, reached over the shared D-Bus),
+# so an explicitly requested host program can display in this Hyprland session.
+# --wait makes systemd-run use the D-Bus session bus; its default private socket
+# ($XDG_RUNTIME_DIR/systemd/private) rejects peers from inside the container.
+# Wrapped in /bin/sh because systemd-run resolves bare command names inside this container.
+exec systemd-run --user --wait --collect --quiet \
+  --setenv=WAYLAND_DISPLAY="${WAYLAND_DISPLAY:-wayland-1}" --setenv=DISPLAY="${DISPLAY:-:0}" \
+  --setenv=XDG_CURRENT_DESKTOP=Hyprland --setenv=XDG_SESSION_TYPE=wayland \
+  --setenv=HYPRLAND_INSTANCE_SIGNATURE="${HYPRLAND_INSTANCE_SIGNATURE:-}" \
+  --setenv=INPUT_METHOD=fcitx --setenv=QT_IM_MODULE=fcitx \
+  --setenv=XMODIFIERS=@im=fcitx --setenv=SDL_IM_MODULE=fcitx \
+  /bin/sh -c 'exec "$@"' host-run "$@"

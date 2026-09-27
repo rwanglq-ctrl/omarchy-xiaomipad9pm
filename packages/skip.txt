@@ -1,0 +1,67 @@
+# Package | one-line reason
+alacritty | Unused previous desktop component; Omarchy v4 uses Quickshell and foot.
+asdcontrol | No supported ALARM package in this port; omitted.
+avahi | Host owns system services, boot, networking or hardware.
+bluez | Host owns system services, boot, networking or hardware.
+bluez-tools | Host owns system services, boot, networking or hardware.
+bluez-utils | Host owns system services, boot, networking or hardware.
+bolt | Host owns system services, boot, networking or hardware.
+cups | Host owns system services, boot, networking or hardware.
+cups-filters | Host owns system services, boot, networking or hardware.
+cups-pk-helper | Host owns system services, boot, networking or hardware.
+ddcutil | Host owns system services, boot, networking or hardware.
+dhcpcd | Host owns system services, boot, networking or hardware.
+docker | Host owns system services, boot, networking or hardware.
+docker-buildx | Host owns system services, boot, networking or hardware.
+docker-compose | Host owns system services, boot, networking or hardware.
+dotnet-runtime | No supported ALARM package in this port; omitted.
+elephant | Unused previous desktop component; Omarchy v4 uses Quickshell and foot.
+elephant-calc | Unused previous desktop component; Omarchy v4 uses Quickshell and foot.
+elephant-clipboard | Unused previous desktop component; Omarchy v4 uses Quickshell and foot.
+elephant-desktopapplications | Unused previous desktop component; Omarchy v4 uses Quickshell and foot.
+elephant-files | Unused previous desktop component; Omarchy v4 uses Quickshell and foot.
+elephant-menus | Unused previous desktop component; Omarchy v4 uses Quickshell and foot.
+elephant-providerlist | Unused previous desktop component; Omarchy v4 uses Quickshell and foot.
+elephant-runner | Unused previous desktop component; Omarchy v4 uses Quickshell and foot.
+elephant-symbols | Unused previous desktop component; Omarchy v4 uses Quickshell and foot.
+elephant-websearch | Unused previous desktop component; Omarchy v4 uses Quickshell and foot.
+gpu-screen-recorder | Host owns system services, boot, networking or hardware.
+herdr | No supported ALARM package in this port; omitted.
+hypridle | Unused previous desktop component; Omarchy v4 uses Quickshell and foot.
+hyprland-guiutils | No supported ALARM package in this port; omitted.
+hyprland-preview-share-picker | Use the portal built-in hyprland-share-picker.
+hyprlock | Unused previous desktop component; Omarchy v4 uses Quickshell and foot.
+kernel-modules-hook | Host owns system services, boot, networking or hardware.
+lazydocker | Host owns system services, boot, networking or hardware.
+libeb | Transitive AUR dependency resolved by yay.
+localsend | No supported ALARM package in this port; omitted.
+mako | Unused previous desktop component; Omarchy v4 uses Quickshell and foot.
+mise-bin | No supported ALARM package in this port; omitted.
+netctl | Host owns system services, boot, networking or hardware.
+networkmanager | Host owns system services, boot, networking or hardware.
+nss-mdns | Host owns system services, boot, networking or hardware.
+nvim | Use neovim.
+obs-studio | No supported ALARM package in this port; omitted.
+obsidian | No supported ALARM package in this port; omitted.
+omacalc | Use qalculate-gtk.
+omacut | No supported ALARM package in this port; omitted.
+omarchy-nvim | No supported ALARM package in this port; omitted.
+pinta | No supported ALARM package in this port; omitted.
+plymouth | Host owns system services, boot, networking or hardware.
+power-profiles-daemon | Host owns system services, boot, networking or hardware.
+qemu-user-static-binfmt | No supported ALARM package in this port; omitted.
+sddm | Host owns system services, boot, networking or hardware.
+swaybg | Unused previous desktop component; Omarchy v4 uses Quickshell and foot.
+system-config-printer | Host owns system services, boot, networking or hardware.
+tobi-try | No supported ALARM package in this port; omitted.
+ttf-jetbrains-mono-nerd-basic | Use ttf-jetbrains-mono-nerd.
+ttfx | No supported ALARM package in this port; omitted.
+tzupdate | Host owns system services, boot, networking or hardware.
+udiskie | Host owns system services, boot, networking or hardware.
+ufw | Host owns system services, boot, networking or hardware.
+ufw-docker | Host owns system services, boot, networking or hardware.
+uwsm | Host owns system services, boot, networking or hardware.
+vi | ALARM no longer provides this name; use ex-vi-compat.
+walker | Unused previous desktop component; Omarchy v4 uses Quickshell and foot.
+waybar | Unused previous desktop component; Omarchy v4 uses Quickshell and foot.
+wireless-regdb | Host owns system services, boot, networking or hardware.

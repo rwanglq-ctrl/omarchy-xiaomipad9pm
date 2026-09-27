@@ -1,0 +1,737 @@
+From 5e5c888680d8c30feea23b30367eabf385ab157f Mon Sep 17 00:00:00 2001
+From: omarchy-alarm-nspawn contributors <noreply@example.com>
+Date: Sat, 26 Sep 2026 05:43:55 -0400
+Subject: [PATCH 1/2] =?UTF-8?q?ARM=20=E5=AE=B9=E5=99=A8=E7=A7=BB=E6=A4=8D?=
+ =?UTF-8?q?=EF=BC=9A=E5=8E=BB=E6=8E=89=20uwsm/systemd=20--user=EF=BC=8C?=
+ =?UTF-8?q?=E9=80=82=E9=85=8D=20llvmpipe=20=E5=92=8C=20nspawn=20=E5=AE=B9?=
+ =?UTF-8?q?=E5=99=A8?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ bin/omarchy-install-ai-chatgpt                |  2 +-
+ bin/omarchy-install-ai-hermes                 |  2 +-
+ bin/omarchy-install-ai-openclaw               |  4 ++--
+ bin/omarchy-install-ai-t3-code                |  2 +-
+ bin/omarchy-install-and-launch                |  2 +-
+ bin/omarchy-install-editor-emacs              |  2 +-
+ bin/omarchy-install-editor-vscode             |  2 +-
+ bin/omarchy-install-editor-zed                |  2 +-
+ bin/omarchy-install-gaming-heroic             |  2 +-
+ bin/omarchy-install-gaming-steam              |  2 +-
+ bin/omarchy-install-service-1password         |  2 +-
+ bin/omarchy-install-service-dropbox           |  2 +-
+ bin/omarchy-install-service-signal            |  2 +-
+ bin/omarchy-install-service-spotify           |  2 +-
+ bin/omarchy-launch-1password                  |  2 +-
+ bin/omarchy-launch-browser                    |  5 ++--
+ bin/omarchy-launch-discord-community          |  2 +-
+ bin/omarchy-launch-editor                     |  2 +-
+ ...launch-floating-terminal-with-presentation |  2 +-
+ bin/omarchy-launch-nautilus                   |  2 +-
+ bin/omarchy-launch-nautilus-cwd               |  2 +-
+ bin/omarchy-launch-or-focus                   |  2 +-
+ bin/omarchy-launch-shell                      | 10 +++++---
+ bin/omarchy-launch-signal                     |  2 +-
+ bin/omarchy-launch-spotify                    |  2 +-
+ bin/omarchy-launch-terminal                   |  2 +-
+ bin/omarchy-launch-tui                        |  2 +-
+ bin/omarchy-launch-webapp                     |  2 +-
+ bin/omarchy-restart-app                       |  2 +-
+ bin/omarchy-system-logout                     |  3 ++-
+ bin/omarchy-system-reboot                     |  6 ++---
+ bin/omarchy-system-shutdown                   |  6 ++---
+ bin/omarchy-toggle-nightlight                 |  2 +-
+ bin/omarchy-windows-vm                        |  2 +-
+ config/omarchy/extensions/omarchy-menu.jsonc  |  2 +-
+ default/hypr/autostart.lua                    | 16 +++++++++----
+ default/hypr/envs.lua                         | 17 +++++++++++++
+ default/hypr/helpers.lua                      |  2 +-
+ default/omarchy/omarchy-menu.jsonc            |  2 +-
+ install/user/first-run/audio-tuning.sh        | 14 ++---------
+ install/user/first-run/enable-user-units.sh   | 24 ++++---------------
+ install/user/first-run/wifi.sh                |  4 ++--
+ install/user/mise-work.sh                     |  3 +++
+ install/user/mise.sh                          |  3 +++
+ shell/plugins/lock/LockView.qml               |  3 ++-
+ shell/plugins/panels/dropbox/Service.qml      |  2 +-
+ shell/plugins/services/nightlight/Service.qml |  2 +-
+ shell/services/AppLibrary.qml                 |  2 +-
+ 48 files changed, 98 insertions(+), 88 deletions(-)
+
+diff --git a/bin/omarchy-install-ai-chatgpt b/bin/omarchy-install-ai-chatgpt
+index 8986e8e..f3fe6a6 100755
+--- a/bin/omarchy-install-ai-chatgpt
++++ b/bin/omarchy-install-ai-chatgpt
+@@ -9,7 +9,7 @@ echo "Installing ChatGPT..."
+ omarchy-pkg-add openai-codex-desktop
+ 
+ echo "Opening ChatGPT..."
+-setsid uwsm-app -- /usr/bin/chatgpt >/dev/null 2>&1 &
++setsid /usr/bin/chatgpt >/dev/null 2>&1 &
+ 
+ echo ""
+ echo "ChatGPT has been installed."
+diff --git a/bin/omarchy-install-ai-hermes b/bin/omarchy-install-ai-hermes
+index 5bf6b67..eaf1d18 100755
+--- a/bin/omarchy-install-ai-hermes
++++ b/bin/omarchy-install-ai-hermes
+@@ -147,7 +147,7 @@ PY
+ fi
+ 
+ echo "Opening Hermes Desktop..."
+-setsid uwsm-app -- /usr/bin/hermes-desktop >/dev/null 2>&1 &
++setsid /usr/bin/hermes-desktop >/dev/null 2>&1 &
+ 
+ # Only a running Hermes can be told which skin to show; a unit outlives this
+ # terminal and reports to the journal.
+diff --git a/bin/omarchy-install-ai-openclaw b/bin/omarchy-install-ai-openclaw
+index cb79a9a..77a68c1 100755
+--- a/bin/omarchy-install-ai-openclaw
++++ b/bin/omarchy-install-ai-openclaw
+@@ -24,10 +24,10 @@ omarchy-webapp-install OpenClaw "http://127.0.0.1:18789" \
+ # that is already onboarded goes straight to the app.
+ if [[ -f $HOME/.openclaw/openclaw.json ]]; then
+   echo "Opening OpenClaw..."
+-  setsid uwsm-app -- gtk-launch OpenClaw >/dev/null 2>&1 &
++  setsid gtk-launch OpenClaw >/dev/null 2>&1 &
+ elif omarchy-openclaw-onboard && [[ -f $HOME/.openclaw/openclaw.json ]]; then
+   echo "Opening OpenClaw..."
+-  setsid uwsm-app -- gtk-launch OpenClaw >/dev/null 2>&1 &
++  setsid gtk-launch OpenClaw >/dev/null 2>&1 &
+ fi
+ 
+ echo ""
+diff --git a/bin/omarchy-install-ai-t3-code b/bin/omarchy-install-ai-t3-code
+index b9e3af3..0ffb527 100755
+--- a/bin/omarchy-install-ai-t3-code
++++ b/bin/omarchy-install-ai-t3-code
+@@ -25,7 +25,7 @@ omarchy-theme-set-t3code
+ t3 theme set omarchy --base-dir "$T3CODE_HOME"
+ 
+ echo "Opening T3 Code..."
+-setsid uwsm-app -- gtk-launch t3code >/dev/null 2>&1 &
++setsid gtk-launch t3code >/dev/null 2>&1 &
+ 
+ echo ""
+ echo "T3 Code has been installed."
+diff --git a/bin/omarchy-install-and-launch b/bin/omarchy-install-and-launch
+index 2a7e547..c2c51c0 100755
+--- a/bin/omarchy-install-and-launch
++++ b/bin/omarchy-install-and-launch
+@@ -24,4 +24,4 @@ packages_arg="${packages_arg% }"
+ 
+ # The subshell keeps & from backgrounding the package installation too.
+ exec omarchy-launch-floating-terminal-with-presentation \
+-  "echo ${install_message}; omarchy-pkg-add ${packages_arg} && (setsid uwsm-app -- gtk-launch ${desktop_id_arg} >/dev/null 2>&1 &)"
++  "echo ${install_message}; omarchy-pkg-add ${packages_arg} && (setsid gtk-launch ${desktop_id_arg} >/dev/null 2>&1 &)"
+diff --git a/bin/omarchy-install-editor-emacs b/bin/omarchy-install-editor-emacs
+index 743b0ce..ff4bd4c 100755
+--- a/bin/omarchy-install-editor-emacs
++++ b/bin/omarchy-install-editor-emacs
+@@ -6,4 +6,4 @@ echo "Installing Emacs..."
+ omarchy-pkg-aur-add omarchy-emacs && omarchy-install-emacs
+ 
+ # emacsclient opens a frame on the running daemon, not a second Emacs
+-setsid uwsm-app -- gtk-launch emacsclient >/dev/null 2>&1 &
++setsid gtk-launch emacsclient >/dev/null 2>&1 &
+diff --git a/bin/omarchy-install-editor-vscode b/bin/omarchy-install-editor-vscode
+index 2705fc1..f04465c 100755
+--- a/bin/omarchy-install-editor-vscode
++++ b/bin/omarchy-install-editor-vscode
+@@ -26,4 +26,4 @@ printf '{\n  "update.mode": "none"\n}\n' > ~/.config/Code/User/settings.json
+ # Apply Omarchy theme to VSCode
+ omarchy-theme-set-vscode
+ 
+-setsid uwsm-app -- gtk-launch code >/dev/null 2>&1 &
++setsid gtk-launch code >/dev/null 2>&1 &
+diff --git a/bin/omarchy-install-editor-zed b/bin/omarchy-install-editor-zed
+index 799f86c..64eaba1 100755
+--- a/bin/omarchy-install-editor-zed
++++ b/bin/omarchy-install-editor-zed
+@@ -8,4 +8,4 @@ omarchy-pkg-add zed omazed
+ # Apply Omarchy theme to Zed
+ omazed setup
+ 
+-setsid uwsm-app -- gtk-launch dev.zed.Zed >/dev/null 2>&1 &
++setsid gtk-launch dev.zed.Zed >/dev/null 2>&1 &
+diff --git a/bin/omarchy-install-gaming-heroic b/bin/omarchy-install-gaming-heroic
+index 8ba43ce..df416a6 100755
+--- a/bin/omarchy-install-gaming-heroic
++++ b/bin/omarchy-install-gaming-heroic
+@@ -9,4 +9,4 @@ echo "Installing Heroic Games Launcher..."
+ omarchy-pkg-add heroic-games-launcher-bin
+ omarchy-install-gaming-gpu-lib32
+ 
+-setsid uwsm-app -- gtk-launch heroic >/dev/null 2>&1 &
++setsid gtk-launch heroic >/dev/null 2>&1 &
+diff --git a/bin/omarchy-install-gaming-steam b/bin/omarchy-install-gaming-steam
+index cefe8ce..20dce3b 100755
+--- a/bin/omarchy-install-gaming-steam
++++ b/bin/omarchy-install-gaming-steam
+@@ -12,4 +12,4 @@ omarchy-install-gaming-gpu-lib32
+ echo ""
+ echo "Steam will start automatically now. This might take a while..."
+ 
+-setsid uwsm-app -- gtk-launch steam >/dev/null 2>&1 &
++setsid gtk-launch steam >/dev/null 2>&1 &
+diff --git a/bin/omarchy-install-service-1password b/bin/omarchy-install-service-1password
+index f59cab9..344b25b 100755
+--- a/bin/omarchy-install-service-1password
++++ b/bin/omarchy-install-service-1password
+@@ -28,7 +28,7 @@ echo "Installing 1Password extension for Chromium..."
+ install_chromium_extension
+ 
+ echo "Opening 1Password..."
+-uwsm-app -- 1password >/dev/null 2>&1 &
++1password >/dev/null 2>&1 &
+ 
+ echo ""
+ echo "1Password has been installed. Restart Chromium to load the browser extension."
+diff --git a/bin/omarchy-install-service-dropbox b/bin/omarchy-install-service-dropbox
+index 0ee07bf..f19c108 100755
+--- a/bin/omarchy-install-service-dropbox
++++ b/bin/omarchy-install-service-dropbox
+@@ -9,5 +9,5 @@ echo "Adding Dropbox to the bar..."
+ omarchy-plugin-enable omarchy.dropbox
+ 
+ echo "Starting Dropbox..."
+-uwsm-app -- dropbox-cli start &>/dev/null &
++dropbox-cli start &>/dev/null &
+ echo "See Dropbox icon behind  hover tray in top right and right-click for setup."
+diff --git a/bin/omarchy-install-service-signal b/bin/omarchy-install-service-signal
+index f767968..13f4713 100755
+--- a/bin/omarchy-install-service-signal
++++ b/bin/omarchy-install-service-signal
+@@ -9,7 +9,7 @@ echo "Installing Signal..."
+ omarchy-pkg-add signal-desktop
+ 
+ echo "Opening Signal..."
+-setsid uwsm-app -- /usr/bin/signal-desktop >/dev/null 2>&1 &
++setsid /usr/bin/signal-desktop >/dev/null 2>&1 &
+ 
+ echo ""
+ echo "Signal has been installed."
+diff --git a/bin/omarchy-install-service-spotify b/bin/omarchy-install-service-spotify
+index beae993..9e924c7 100755
+--- a/bin/omarchy-install-service-spotify
++++ b/bin/omarchy-install-service-spotify
+@@ -9,7 +9,7 @@ echo "Installing Spotify..."
+ omarchy-pkg-add spotify
+ 
+ echo "Opening Spotify..."
+-setsid uwsm-app -- /usr/bin/spotify >/dev/null 2>&1 &
++setsid /usr/bin/spotify >/dev/null 2>&1 &
+ 
+ echo ""
+ echo "Spotify has been installed."
+diff --git a/bin/omarchy-launch-1password b/bin/omarchy-launch-1password
+index 61889fd..cec4f1c 100755
+--- a/bin/omarchy-launch-1password
++++ b/bin/omarchy-launch-1password
+@@ -8,7 +8,7 @@ set -e
+ # up oversized next to every other window on a scaled monitor. The packaged
+ # .desktop pins it too; this covers the hotkey, which runs the binary directly.
+ if omarchy-cmd-present 1password; then
+-  exec setsid uwsm-app -- 1password --force-device-scale-factor=1
++  exec setsid 1password --force-device-scale-factor=1
+ else
+   exec omarchy-launch-floating-terminal-with-presentation omarchy-install-service-1password
+ fi
+diff --git a/bin/omarchy-launch-browser b/bin/omarchy-launch-browser
+index 044b220..cb26e6d 100755
+--- a/bin/omarchy-launch-browser
++++ b/bin/omarchy-launch-browser
+@@ -17,9 +17,8 @@ else
+   private_flag="--incognito"
+ fi
+ 
+-systemd-run --user --quiet --collect --unit="omarchy-browser-$(date +%s%N)" \
+-  --property=StandardOutput=null --property=StandardError=null \
+-  uwsm-app -- "$browser_exec" "${@/--private/$private_flag}"
++# ARM 容器移植：没有 systemd --user，直接脱离终端启动
++setsid "$browser_exec" "${@/--private/$private_flag}" >/dev/null 2>&1 &
+ 
+ url=""
+ for argument in "$@"; do
+diff --git a/bin/omarchy-launch-discord-community b/bin/omarchy-launch-discord-community
+index 1c2f236..a092966 100755
+--- a/bin/omarchy-launch-discord-community
++++ b/bin/omarchy-launch-discord-community
+@@ -5,7 +5,7 @@
+ invite="https://discord.gg/tXFUdasqhY"
+ 
+ if omarchy-cmd-present discord; then
+-  exec setsid uwsm-app -- discord --url -- "discord://-/invite/${invite##*/}"
++  exec setsid discord --url -- "discord://-/invite/${invite##*/}"
+ else
+   exec omarchy-launch-webapp "$invite"
+ fi
+diff --git a/bin/omarchy-launch-editor b/bin/omarchy-launch-editor
+index 8a69dab..b416332 100755
+--- a/bin/omarchy-launch-editor
++++ b/bin/omarchy-launch-editor
+@@ -29,6 +29,6 @@ nvim | vim | nano | micro | hx | helix | fresh)
+   fi
+   ;;
+ *)
+-  exec setsid uwsm-app -- "$editor" "$@"
++  exec setsid "$editor" "$@"
+   ;;
+ esac
+diff --git a/bin/omarchy-launch-floating-terminal-with-presentation b/bin/omarchy-launch-floating-terminal-with-presentation
+index c9cb255..1a0077d 100755
+--- a/bin/omarchy-launch-floating-terminal-with-presentation
++++ b/bin/omarchy-launch-floating-terminal-with-presentation
+@@ -10,4 +10,4 @@ source omarchy-restart-gum
+ cmd="$*"
+ presentation_script="omarchy-show-logo; $cmd; if (( \$? != 130 )); then omarchy-show-done; fi"
+ 
+-exec setsid uwsm-app -- xdg-terminal-exec --app-id=org.omarchy.terminal --title=Omarchy -e bash -c "$presentation_script"
++exec setsid xdg-terminal-exec --app-id=org.omarchy.terminal --title=Omarchy -e bash -c "$presentation_script"
+diff --git a/bin/omarchy-launch-nautilus b/bin/omarchy-launch-nautilus
+index 0b10b7b..0223cde 100755
+--- a/bin/omarchy-launch-nautilus
++++ b/bin/omarchy-launch-nautilus
+@@ -2,4 +2,4 @@
+ 
+ # omarchy:summary=Launch Files
+ 
+-exec setsid uwsm-app -- nautilus --new-window
++exec setsid nautilus --new-window
+diff --git a/bin/omarchy-launch-nautilus-cwd b/bin/omarchy-launch-nautilus-cwd
+index ae9a0d8..ca3445c 100755
+--- a/bin/omarchy-launch-nautilus-cwd
++++ b/bin/omarchy-launch-nautilus-cwd
+@@ -2,4 +2,4 @@
+ 
+ # omarchy:summary=Launch Files in the active terminal's current directory
+ 
+-exec setsid uwsm-app -- nautilus --new-window "$(omarchy-cmd-terminal-cwd)"
++exec setsid nautilus --new-window "$(omarchy-cmd-terminal-cwd)"
+diff --git a/bin/omarchy-launch-or-focus b/bin/omarchy-launch-or-focus
+index 11f65c5..717698f 100755
+--- a/bin/omarchy-launch-or-focus
++++ b/bin/omarchy-launch-or-focus
+@@ -9,7 +9,7 @@ if (($# == 0)); then
+ fi
+ 
+ WINDOW_PATTERN="$1"
+-LAUNCH_COMMAND="${2:-"uwsm-app -- $WINDOW_PATTERN"}"
++LAUNCH_COMMAND="${2:-"$WINDOW_PATTERN"}"
+ WINDOW_ADDRESS=$(hyprctl clients -j | jq -r --arg p "$WINDOW_PATTERN" '.[]|select((.class|test("\\b" + $p + "\\b";"i")) or (.title|test("\\b" + $p + "\\b";"i")))|.address' | head -n1)
+ 
+ if [[ -n $WINDOW_ADDRESS ]]; then
+diff --git a/bin/omarchy-launch-shell b/bin/omarchy-launch-shell
+index c183eb0..7cd3735 100755
+--- a/bin/omarchy-launch-shell
++++ b/bin/omarchy-launch-shell
+@@ -14,9 +14,13 @@
+ # A package upgrade rewriting $OMARCHY_PATH/shell would otherwise reload it
+ # against a half-written tree, and that failed reload leaves a second engine
+ # generation behind that turns the next restart's IPC kill into a crash.
++# ARM 容器移植：没有 journald，日志写到 ~/.local/state/omarchy/shell.log
++shell_log="${XDG_STATE_HOME:-$HOME/.local/state}/omarchy/shell.log"
++mkdir -p "${shell_log%/*}"
++
+ run_shell() {
+   QS_DISABLE_FILE_WATCHER=1 QS_NO_RELOAD_POPUP=1 \
+-    systemd-cat -t omarchy-shell -- quickshell -n -p "$OMARCHY_PATH/shell" &
++    quickshell -n -p "$OMARCHY_PATH/shell" >>"$shell_log" 2>&1 &
+   shell_pid=$!
+ 
+   local status
+@@ -82,10 +86,10 @@ while true; do
+   fi
+ 
+   if (( ++attempts > 5 )); then
+-    logger -t omarchy-shell "Giving up on the Omarchy shell after $attempts relaunches in under a minute."
++    echo "$(date "+%F %T") Giving up on the Omarchy shell after $attempts relaunches in under a minute." >>"$shell_log"
+     exit 1
+   fi
+ 
+-  logger -t omarchy-shell "Omarchy shell exited with status $status; relaunching."
++  echo "$(date "+%F %T") Omarchy shell exited with status $status; relaunching." >>"$shell_log"
+   sleep 1
+ done
+diff --git a/bin/omarchy-launch-signal b/bin/omarchy-launch-signal
+index 31d94cc..bd88c26 100755
+--- a/bin/omarchy-launch-signal
++++ b/bin/omarchy-launch-signal
+@@ -9,7 +9,7 @@ WINDOW_ADDRESS=$(hyprctl clients -j | jq -r '.[]|select((.class|test("\\bsignal\
+ if [[ -n $WINDOW_ADDRESS ]]; then
+   hyprctl dispatch "hl.dsp.focus({ window = \"address:$WINDOW_ADDRESS\" })" >/dev/null 2>&1 || hyprctl dispatch focuswindow "address:$WINDOW_ADDRESS"
+ elif [[ -x /usr/bin/signal-desktop ]]; then
+-  exec setsid uwsm-app -- /usr/bin/signal-desktop
++  exec setsid /usr/bin/signal-desktop
+ else
+   exec omarchy-launch-floating-terminal-with-presentation omarchy-install-service-signal
+ fi
+diff --git a/bin/omarchy-launch-spotify b/bin/omarchy-launch-spotify
+index d94202a..51fbfed 100755
+--- a/bin/omarchy-launch-spotify
++++ b/bin/omarchy-launch-spotify
+@@ -9,7 +9,7 @@ WINDOW_ADDRESS=$(hyprctl clients -j | jq -r '.[]|select((.class|test("\\bspotify
+ if [[ -n $WINDOW_ADDRESS ]]; then
+   hyprctl dispatch "hl.dsp.focus({ window = \"address:$WINDOW_ADDRESS\" })" >/dev/null 2>&1 || hyprctl dispatch focuswindow "address:$WINDOW_ADDRESS"
+ elif [[ -x /usr/bin/spotify ]]; then
+-  exec setsid uwsm-app -- /usr/bin/spotify
++  exec setsid /usr/bin/spotify
+ else
+   exec omarchy-launch-floating-terminal-with-presentation omarchy-install-service-spotify
+ fi
+diff --git a/bin/omarchy-launch-terminal b/bin/omarchy-launch-terminal
+index a07a1dd..8404d8d 100755
+--- a/bin/omarchy-launch-terminal
++++ b/bin/omarchy-launch-terminal
+@@ -3,4 +3,4 @@
+ # omarchy:summary=Launch a terminal in the active terminal's current directory
+ # omarchy:args=[command...]
+ 
+-exec setsid uwsm-app -- xdg-terminal-exec --dir="$(omarchy-cmd-terminal-cwd)" "$@"
++exec setsid xdg-terminal-exec --dir="$(omarchy-cmd-terminal-cwd)" "$@"
+diff --git a/bin/omarchy-launch-tui b/bin/omarchy-launch-tui
+index bd67c64..fcabebc 100755
+--- a/bin/omarchy-launch-tui
++++ b/bin/omarchy-launch-tui
+@@ -10,4 +10,4 @@ else
+   APP_ID="org.omarchy.$(basename $1)"
+ fi
+ 
+-exec setsid uwsm-app -- xdg-terminal-exec --app-id=$APP_ID -e "$1" "${@:2}"
++exec setsid xdg-terminal-exec --app-id=$APP_ID -e "$1" "${@:2}"
+diff --git a/bin/omarchy-launch-webapp b/bin/omarchy-launch-webapp
+index 6ee0f84..859a397 100755
+--- a/bin/omarchy-launch-webapp
++++ b/bin/omarchy-launch-webapp
+@@ -10,4 +10,4 @@ google-chrome* | brave* | microsoft-edge* | opera* | vivaldi* | helium*) ;;
+ *) browser="chromium.desktop" ;;
+ esac
+ 
+-exec setsid uwsm-app -- $(sed -n 's/^Exec=\([^ ]*\).*/\1/p' {~/.local,~/.nix-profile,/usr}/share/applications/$browser 2>/dev/null | head -1) --app="$1" "${@:2}"
++exec setsid $(sed -n 's/^Exec=\([^ ]*\).*/\1/p' {~/.local,~/.nix-profile,/usr}/share/applications/$browser 2>/dev/null | head -1) --app="$1" "${@:2}"
+diff --git a/bin/omarchy-restart-app b/bin/omarchy-restart-app
+index d250650..c66663a 100755
+--- a/bin/omarchy-restart-app
++++ b/bin/omarchy-restart-app
+@@ -4,4 +4,4 @@
+ # omarchy:args=<application-name> [application-args...]
+ 
+ pkill -x $1
+-setsid uwsm-app -- "$@" >/dev/null 2>&1 &
++setsid "$@" >/dev/null 2>&1 &
+diff --git a/bin/omarchy-system-logout b/bin/omarchy-system-logout
+index cb0fd66..c7f3690 100755
+--- a/bin/omarchy-system-logout
++++ b/bin/omarchy-system-logout
+@@ -4,7 +4,8 @@
+ # omarchy:examples=omarchy logout | omarchy system logout
+ # omarchy:aliases=omarchy logout
+ 
+-nohup bash -c "sleep 2 && uwsm stop" >/dev/null 2>&1 &
++# ARM 容器移植：没有 uwsm，直接退出 Hyprland（宿主随后切回 Debian 桌面）
++nohup bash -c "sleep 2 && hyprctl dispatch 'hl.dsp.exit()'" >/dev/null 2>&1 &
+ 
+ omarchy-osd -i logout -m "Logging out" -d 5000
+ 
+diff --git a/bin/omarchy-system-reboot b/bin/omarchy-system-reboot
+index 4d2b6c8..4102ec8 100755
+--- a/bin/omarchy-system-reboot
++++ b/bin/omarchy-system-reboot
+@@ -4,9 +4,9 @@
+ # omarchy:examples=omarchy reboot | omarchy system reboot
+ # omarchy:aliases=omarchy reboot
+ 
+-# Schedule the reboot in the user manager so closing the terminal's systemd
+-# scope cannot terminate it before it runs.
+-systemd-run --user --collect --quiet --on-active="2s" --timer-property=AccuracySec=100ms systemctl reboot --no-wall || exit 1
++# ARM 容器移植：容器里没有 systemd，不能关机/重启；改为退出 Hyprland，
++# 由宿主切回 Debian 桌面。
++nohup bash -c "sleep 2 && hyprctl dispatch 'hl.dsp.exit()'" >/dev/null 2>&1 &
+ 
+ omarchy-osd -i reboot -m "Rebooting" -d 5000
+ 
+diff --git a/bin/omarchy-system-shutdown b/bin/omarchy-system-shutdown
+index 0143760..e3e693c 100755
+--- a/bin/omarchy-system-shutdown
++++ b/bin/omarchy-system-shutdown
+@@ -4,9 +4,9 @@
+ # omarchy:examples=omarchy shutdown | omarchy system shutdown
+ # omarchy:aliases=omarchy shutdown
+ 
+-# Schedule the shutdown in the user manager so closing the terminal's systemd
+-# scope cannot terminate it before it runs.
+-systemd-run --user --collect --quiet --on-active="2s" --timer-property=AccuracySec=100ms systemctl poweroff --no-wall || exit 1
++# ARM 容器移植：容器里没有 systemd，不能关机/重启；改为退出 Hyprland，
++# 由宿主切回 Debian 桌面。
++nohup bash -c "sleep 2 && hyprctl dispatch 'hl.dsp.exit()'" >/dev/null 2>&1 &
+ 
+ omarchy-osd -i shutdown -m "Shutting down" -d 5000
+ 
+diff --git a/bin/omarchy-toggle-nightlight b/bin/omarchy-toggle-nightlight
+index af71724..67f132a 100755
+--- a/bin/omarchy-toggle-nightlight
++++ b/bin/omarchy-toggle-nightlight
+@@ -36,7 +36,7 @@ fi
+ 
+ # Ensure hyprsunset is running
+ if ! pgrep -x hyprsunset >/dev/null; then
+-  setsid uwsm-app -- hyprsunset &
++  setsid hyprsunset &
+ fi
+ 
+ # Query the current temperature
+diff --git a/bin/omarchy-windows-vm b/bin/omarchy-windows-vm
+index f672ed7..672901a 100755
+--- a/bin/omarchy-windows-vm
++++ b/bin/omarchy-windows-vm
+@@ -1171,7 +1171,7 @@ install_windows() {
+ [Desktop Entry]
+ Name=Windows
+ Comment=Start Windows VM via Docker and connect with RDP
+-Exec=uwsm app -- omarchy-windows-vm launch
++Exec=omarchy-windows-vm launch
+ Icon=windows
+ Terminal=false
+ Type=Application
+diff --git a/config/omarchy/extensions/omarchy-menu.jsonc b/config/omarchy/extensions/omarchy-menu.jsonc
+index 9682396..23d3232 100644
+--- a/config/omarchy/extensions/omarchy-menu.jsonc
++++ b/config/omarchy/extensions/omarchy-menu.jsonc
+@@ -19,7 +19,7 @@
+   // Examples:
+   // "personal": {"icon":"","label":"Personal"},
+   // "personal.notes": {"icon":"󰎞","label":"Notes","action":"omarchy-launch-editor ~/notes"},
+-  // "personal.files": {"icon":"","label":"Files","action":"uwsm-app -- nautilus ~/Documents"},
++  // "personal.files": {"icon":"","label":"Files","action":"nautilus ~/Documents"},
+   //
+   // Only use provider when a provider_name function or command named "name"
+   // returns JSON rows. Static submenus only need dotted ids.
+diff --git a/default/hypr/autostart.lua b/default/hypr/autostart.lua
+index d679729..ef301d7 100644
+--- a/default/hypr/autostart.lua
++++ b/default/hypr/autostart.lua
+@@ -1,13 +1,19 @@
+ hl.on("hyprland.start", function()
+-  -- Slow app launch fix -- set systemd vars before starting session services.
+-  hl.exec_cmd("systemctl --user import-environment $(env | cut -d'=' -f 1)")
+-  hl.exec_cmd("dbus-update-activation-environment --systemd --all")
++  -- ARM 容器移植：没有 systemd --user，也不能用 dbus-update-activation-environment
++  -- （D-Bus 会话总线属于宿主 Debian，把环境推过去会让宿主按容器的环境激活服务）。
++  -- 已移除：systemctl --user import-environment、dbus-update-activation-environment、
++  --         omarchy-powerprofiles-init（需要 power-profiles-daemon）、
++  --         udiskie（需要 udisks2 系统服务）。
+ 
+   hl.exec_cmd("omarchy-launch-shell")
+   hl.exec_cmd("omarchy-provision-first-run")
+-  hl.exec_cmd("omarchy-powerprofiles-init")
+   hl.exec_cmd(o.launch("omarchy-hyprland-monitor-watch"))
+-  hl.exec_cmd(o.launch("udiskie --automount --no-notify --no-tray"))
++
++  -- 原本由 systemd 用户服务常驻的程序，改由 Hyprland 启动时拉起（等同 exec-once）。
++  -- omarchy-fcitx5.service
++  hl.exec_cmd("fcitx5 -d --replace --disable notificationitem")
++  -- omarchy-migrate-notify.service
++  hl.exec_cmd("sleep 5 && omarchy-migrate-notify")
+ 
+   -- Run post-boot hooks after startup config has loaded.
+   hl.exec_cmd("sleep 2 && omarchy-hook post-boot")
+diff --git a/default/hypr/envs.lua b/default/hypr/envs.lua
+index 4eb9c94..10f4932 100644
+--- a/default/hypr/envs.lua
++++ b/default/hypr/envs.lua
+@@ -33,8 +33,25 @@ for entry in (os.getenv("PATH") or "/usr/local/bin:/usr/bin"):gmatch("[^:]+") do
+   if entry ~= bin_dir then table.insert(kept, entry) end
+ end
+ table.insert(kept, 1, bin_dir)
++-- ARM 容器移植：原来经 uwsm 读 env-bootstrap 追加的用户目录
++local local_bin = paths.home .. "/.local/bin"
++local have_local = false
++for _, e in ipairs(kept) do if e == local_bin then have_local = true end end
++if not have_local then table.insert(kept, local_bin) end
+ hl.env("PATH", table.concat(kept, ":"))
+ 
++-- ARM 容器移植：没有 uwsm / systemd --user，原本由 default/uwsm/default 和
++-- default/environment.d/10-omarchy-fcitx.conf 提供的会话变量改在这里设置。
++hl.env("TERMINAL", "xdg-terminal-exec")
++hl.env("EDITOR", "omarchy-launch-editor --inline")
++hl.env("INPUT_METHOD", "fcitx")
++hl.env("QT_IM_MODULE", "fcitx")
++hl.env("XMODIFIERS", "@im=fcitx")
++hl.env("SDL_IM_MODULE", "fcitx")
++-- D-Bus 会话总线属于宿主：gsettings 默认会经总线交给宿主的 dconf-service，
++-- 写进宿主的配置。改用本地 keyfile（~/.config/glib-2.0/settings/keyfile）。
++hl.env("GSETTINGS_BACKEND", "keyfile")
++
+ -- Hardware-specific environment.
+ require("default.hypr.nvidia")
+ 
+diff --git a/default/hypr/helpers.lua b/default/hypr/helpers.lua
+index b1eb48f..af48d73 100644
+--- a/default/hypr/helpers.lua
++++ b/default/hypr/helpers.lua
+@@ -106,7 +106,7 @@ function o.bind(keys, description, dispatcher, options)
+ end
+ 
+ function o.launch(command)
+-  return "uwsm-app -- " .. command
++  return command
+ end
+ 
+ function o.exec_on_start(command)
+diff --git a/default/omarchy/omarchy-menu.jsonc b/default/omarchy/omarchy-menu.jsonc
+index fb2b31d..9a27cfb 100644
+--- a/default/omarchy/omarchy-menu.jsonc
++++ b/default/omarchy/omarchy-menu.jsonc
+@@ -81,7 +81,7 @@
+   "trigger.share.clipboard": {"icon":"","label":"Clipboard","action":"omarchy-menu-share clipboard"},
+   "trigger.share.file": {"icon":"","label":"File","action":"omarchy-menu-share file"},
+   "trigger.share.folder": {"icon":"","label":"Folder","action":"omarchy-menu-share folder"},
+-  "trigger.share.receive": {"icon":"󰥦","label":"Receive","action":"uwsm-app -- localsend"},
++  "trigger.share.receive": {"icon":"󰥦","label":"Receive","action":"localsend"},
+   "trigger.toggle.idle-lock": {"icon":"󰅶","label":"Stay Awake","action":"omarchy-toggle-idle"},
+   "trigger.toggle.notifications": {"icon":"󰂛","label":"Notifications","action":"omarchy-toggle-notification-silencing"},
+   "trigger.toggle.crash-capture": {"icon":"󱚡","label":"Crash Capture","action":"omarchy-toggle-crash-capture"},
+diff --git a/install/user/first-run/audio-tuning.sh b/install/user/first-run/audio-tuning.sh
+index 1564efb..e2827da 100755
+--- a/install/user/first-run/audio-tuning.sh
++++ b/install/user/first-run/audio-tuning.sh
+@@ -1,14 +1,4 @@
+ #!/bin/bash
+ 
+-# Apply the speaker tuning for this laptop. Runs at first-run rather than at
+-# finalize-user time because finalize-user also runs in the ISO chroot, where
+-# there is no audio server: the sink the tuning has to target does not exist, so
+-# nothing could be written and nothing would retry -- the finalizer marks all
+-# shipped migrations complete on a fresh install. By first-run the session is up
+-# and the sink is present.
+-#
+-# A no-op on machines no tuning matches.
+-
+-set -euo pipefail
+-
+-omarchy-audio-tuning on
++# ARM 容器移植：音频由宿主的 PipeWire 提供，不在容器里加扬声器调校滤波链。
++exit 0
+diff --git a/install/user/first-run/enable-user-units.sh b/install/user/first-run/enable-user-units.sh
+index 9865fc2..8dabc19 100755
+--- a/install/user/first-run/enable-user-units.sh
++++ b/install/user/first-run/enable-user-units.sh
+@@ -1,21 +1,7 @@
+ #!/bin/bash
+ 
+-# Enable AND start the user systemd units we ship. Runs at first-run rather
+-# than at finalize-user time because the user manager isn't live during the
+-# ISO chroot — by first-run, the Hyprland/uwsm session is up and
+-# `systemctl --user enable --now` both writes the correct .wants symlinks
+-# (based on each unit's [Install]/WantedBy) and starts the services so the
+-# first session has bluetooth pairing, sleep lock, etc. live immediately
+-# instead of waiting for the next login. ConditionPath* in the unit files
+-# keep the enabled units inert on hardware they don't apply to.
+-
+-set -euo pipefail
+-
+-systemctl --user daemon-reload
+-systemctl --user enable --now \
+-  bt-agent.service \
+-  omarchy-recover-internal-monitor.service \
+-  omarchy-sleep-lock.service \
+-  omarchy-migrate-notify.service \
+-  omarchy-fcitx5.service \
+-  omarchy-crash-watch.service
++# ARM 容器移植：容器里没有 systemd --user。
++# 这些单元里需要的（fcitx5、omarchy-migrate-notify）已改到
++# default/hypr/autostart.lua 用 Hyprland 启动；其余（蓝牙配对、睡眠锁、
++# 内置屏恢复、崩溃监控）依赖 bluez / logind / journald，在容器里跳过。
++exit 0
+diff --git a/install/user/first-run/wifi.sh b/install/user/first-run/wifi.sh
+index 3b2af23..bf4af97 100644
+--- a/install/user/first-run/wifi.sh
++++ b/install/user/first-run/wifi.sh
+@@ -26,5 +26,5 @@ announce_network() {
+   notify_update
+ }
+ 
+-# Detached, so a slow or absent connection never holds up the rest of first run.
+-announce_network &
++# ARM 容器移植：网络由宿主负责，没有 NetworkManager（nm-online），只提示更新。
++notify_update &
+diff --git a/install/user/mise-work.sh b/install/user/mise-work.sh
+index f77d556..e558724 100644
+--- a/install/user/mise-work.sh
++++ b/install/user/mise-work.sh
+@@ -1,3 +1,6 @@
++# ARM 容器移植：mise 只有 x86 的 mise-bin，ALARM 和 AUR 都没有可编译的包，跳过。
++if ! command -v mise >/dev/null 2>&1; then echo "跳过 $(basename "${BASH_SOURCE[0]}")：没有 mise"; return 0 2>/dev/null || exit 0; fi
++
+ # Setup default work directory (and tries)
+ mkdir -p "$HOME/Work"
+ mkdir -p "$HOME/Work/tries"
+diff --git a/install/user/mise.sh b/install/user/mise.sh
+index 25bdb36..c692222 100644
+--- a/install/user/mise.sh
++++ b/install/user/mise.sh
+@@ -1,3 +1,6 @@
++# ARM 容器移植：mise 只有 x86 的 mise-bin，ALARM 和 AUR 都没有可编译的包，跳过。
++if ! command -v mise >/dev/null 2>&1; then echo "跳过 $(basename "${BASH_SOURCE[0]}")：没有 mise"; return 0 2>/dev/null || exit 0; fi
++
+ # Upgrades must not delete the version a running process is executing from:
+ # mise up would prune the old install dir out from under a live session.
+ mise settings set upgrade.auto_prune false
+diff --git a/shell/plugins/lock/LockView.qml b/shell/plugins/lock/LockView.qml
+index c2deae0..0c0b16a 100644
+--- a/shell/plugins/lock/LockView.qml
++++ b/shell/plugins/lock/LockView.qml
+@@ -105,7 +105,8 @@ Item {
+       anchors.fill: wallpaper
+       source: wallpaper
+       autoPaddingEnabled: false
+-      blurEnabled: root.loadBackground && wallpaper.status === Image.Ready
++      // ARM 容器移植：llvmpipe 纯 CPU 渲染，关掉锁屏背景模糊
++      blurEnabled: false
+       blur: 1.0
+       blurMax: 128
+       blurMultiplier: 1.25
+diff --git a/shell/plugins/panels/dropbox/Service.qml b/shell/plugins/panels/dropbox/Service.qml
+index f4d56f4..cbdb203 100644
+--- a/shell/plugins/panels/dropbox/Service.qml
++++ b/shell/plugins/panels/dropbox/Service.qml
+@@ -128,7 +128,7 @@ Item {
+ 
+   function openFile(file) {
+     if (!file || !file.path) return
+-    Quickshell.execDetached(["uwsm-app", "--", "nautilus", "--select", fileUri(String(file.path))])
++    Quickshell.execDetached(["nautilus", "--select", fileUri(String(file.path))])
+   }
+ 
+   function fileUri(path) {
+diff --git a/shell/plugins/services/nightlight/Service.qml b/shell/plugins/services/nightlight/Service.qml
+index 388b779..b145e5f 100644
+--- a/shell/plugins/services/nightlight/Service.qml
++++ b/shell/plugins/services/nightlight/Service.qml
+@@ -47,7 +47,7 @@ Item {
+ 
+   function runApply(temp) {
+     applyProcess.command = ["bash", "-lc",
+-      "pgrep -x hyprsunset >/dev/null || { setsid uwsm-app -- hyprsunset >/dev/null 2>&1 & sleep 1; }; " +
++      "pgrep -x hyprsunset >/dev/null || { setsid hyprsunset >/dev/null 2>&1 & sleep 1; }; " +
+       "hyprctl hyprsunset temperature " + Number(temp)]
+     applyProcess.running = true
+   }
+diff --git a/shell/services/AppLibrary.qml b/shell/services/AppLibrary.qml
+index 738529d..c7bcf35 100644
+--- a/shell/services/AppLibrary.qml
++++ b/shell/services/AppLibrary.qml
+@@ -82,7 +82,7 @@ Item {
+     // inherit wayland-wm@.service. Keeping gtk-launch as the desktop-entry
+     // resolver supports IDs with spaces and entries that UWSM rejects.
+     // Keep the .desktop suffix or ids like org.telegram.desktop won't resolve.
+-    Util.execDetached("uwsm-app -- gtk-launch " + Util.shellQuote(id + ".desktop"))
++    Util.execDetached("gtk-launch " + Util.shellQuote(id + ".desktop"))
+   }
+ 
+   function remove(desktopId, name) {
+-- 
+2.55.0
+

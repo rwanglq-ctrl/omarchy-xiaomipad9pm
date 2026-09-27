@@ -1,0 +1,28 @@
+name: Test
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  quick:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      # Import the official ALARM aarch64 rootfs instead of relying on a third-party
+      # rolling image. Its published MD5 checks transfer integrity, not authenticity;
+      # ALARM currently documents HTTP for this rootfs endpoint. Pacman validates
+      # package signatures. The quick suite itself runs as an unprivileged user.
+      - name: Build ALARM image and run quick suite
+        run: bash tests/ci.sh --quick
+  full:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      # Same official image, with privilege only for disposable nested rootfs tests.
+      - name: Fresh-rootfs integration and idempotence
+        run: bash tests/ci.sh --full

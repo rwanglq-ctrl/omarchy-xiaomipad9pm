@@ -1,0 +1,22 @@
+#!/bin/sh
+# Installed by omarchy-alarm-nspawn (host/install.sh); @PLACEHOLDERS@ are filled in at install time.
+# weston.service entry point: start the desktop selected by hypr-switch (default: debian).
+# If the Arch one is missing or dies within 20s, fall back to Debian's so the screen isn't left black.
+mode=$(cat "$HOME/.config/hypr-session-mode" 2>/dev/null || echo debian)
+if [ "$mode" = arch ]; then
+  if sudo test -x '@ROOTFS@/usr/bin/start-hyprland'; then
+    start=$(date +%s)
+    "$HOME/.local/bin/arch-hyprland" && exit 0
+    [ $(( $(date +%s) - start )) -ge 20 ] && exit 1
+    echo "hypr-session: Arch Hyprland failed at startup, falling back to Debian" >&2
+  else
+    echo "hypr-session: no Hyprland in Arch container, falling back to Debian" >&2
+  fi
+fi
+# Debian side: its own Hyprland if installed, otherwise the stock Weston command line
+# (the one this drop-in replaced), so the display still works on a host without Hyprland.
+if [ -x /usr/bin/start-hyprland ]; then
+  export LIBSEAT_BACKEND=logind
+  exec /usr/bin/start-hyprland
+fi
+exec /usr/bin/weston --modules=systemd-notify.so --xwayland --continue-without-input

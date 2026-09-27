@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+set -euo pipefail
+# Adapted from the reference helper: wait for Wayland, retry its frontend, refocus.
+# The session bus belongs to the host; do not export activation environments to it.
+export WAYLAND_DISPLAY=${WAYLAND_DISPLAY:-wayland-1}
+: "${XDG_RUNTIME_DIR:?XDG_RUNTIME_DIR is required}"
+socket=$WAYLAND_DISPLAY
+[[ $socket == /* ]] || socket="$XDG_RUNTIME_DIR/$socket"
+for ((i=0; i<50; i++)); do
+  [[ -S $socket ]] && break
+  sleep 0.2
+done
+[[ -S $socket ]] || { echo 'fcitx5-autostart: Wayland socket not ready' >&2; exit 1; }
+has_wayland() {
+  timeout 3 dbus-send --session --print-reply --dest=org.fcitx.Fcitx5 /controller \
+    org.fcitx.Fcitx.Controller1.DebugInfo 2>/dev/null | grep 'Group \[wayland:' >/dev/null
+}
+ready=false
+for attempt in 1 2 3; do
+  if fcitx5 -d -r --disable notificationitem; then
+    for ((i=0; i<20; i++)); do
+      sleep 0.5
+      if has_wayland; then ready=true; break; fi
+    done
+  fi
+  $ready && break
+  echo "fcitx5-autostart: attempt $attempt: no Wayland frontend, retrying" >&2
+  sleep 1
+done
+$ready || { echo 'fcitx5-autostart: failed after three attempts' >&2; exit 1; }
+sleep 2
+ws=$(hyprctl activeworkspace -j | jq -r '.id // empty')
+if [[ $ws =~ ^[1-9][0-9]*$ ]]; then
+  hyprctl dispatch 'hl.dsp.focus({ workspace = "99" })' >/dev/null
+  sleep 0.3
+  hyprctl dispatch "hl.dsp.focus({ workspace = \"$ws\" })" >/dev/null
+fi

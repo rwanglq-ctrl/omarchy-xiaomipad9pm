@@ -1,0 +1,10 @@
+# 雾凇拼音（rime-ice-git，AUR），设置从 Debian 移植
+patch:
+  __include: rime_ice_suggestion:/
+  schema_list:
+    - schema: rime_ice
+    - schema: luna_pinyin_simp
+  menu/page_size: 7
+  # fcitx5 用 Shift 切换中英文（见 ~/.config/fcitx5/config）；Rime 自己不再切换
+  ascii_composer/switch_key/Shift_L: noop
+  ascii_composer/switch_key/Shift_R: noop

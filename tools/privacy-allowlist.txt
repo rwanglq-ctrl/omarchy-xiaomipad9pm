@@ -1,0 +1,23 @@
+# privacy-allowlist.txt — regex per line, matched against file:line:rule
+# output from the scanner. Lines starting with # are comments; blank lines ignored.
+#
+# Each entry is a Perl-compatible regex (grep -P / rg -P).
+# Be specific: match against the full "file:line:rule" string.
+
+# Git SHA hashes in patch headers and BASE file are not secrets
+patches/BASE:.*:base64-blob
+patches/BASE:.*:hex-blob
+patches/.*:1:base64-blob
+patches/.*:1:hex-blob
+
+# Diffstat lines in patches (contain hex-like strings from filenames)
+patches/.*:.*:base64-blob
+patches/.*:.*:hex-blob
+
+# noreply@ and example.com/example.org emails are allowed globally (handled in scanner logic)
+# These don't need entries here — the scanner skips them before reporting.
+
+# The privacy scanner's own code references rule names that may contain owner terms
+privacy-scan\.sh:.*:private-pattern
+privacy-allowlist\.txt:.*:private-pattern
+privacy-selftest\.sh:.*:private-pattern

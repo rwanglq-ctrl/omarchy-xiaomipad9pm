@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+set -euo pipefail
+# ARM 容器移植：uwsm-app 替身。
+# 容器里没有 systemd --user，D-Bus 总线又属于宿主 Debian，真正的 uwsm-app
+# 会把程序交给宿主的 systemd 去启动（跑在宿主上，而不是容器里）。
+# 这里丢掉 uwsm-app 自己的参数，直接在当前环境里 exec 后面的命令。
+# 用法兼容：uwsm-app [-s b|s|a] [-t scope|service] [-a app_name] [-S out|err|both] -- 命令 [参数...]
+while (($#)); do
+  case "$1" in
+    --) shift; break ;;
+    -s|-t|-a|-u|-d|-S)
+      (($# >= 2)) || { echo "uwsm-app: option requires an argument" >&2; exit 2; }
+      shift 2 ;;
+    -*) shift ;;
+    *) break ;;
+  esac
+done
+(($#)) || { echo "uwsm-app（替身）：没有要执行的命令" >&2; exit 1; }
+exec "$@"

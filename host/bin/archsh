@@ -1,0 +1,18 @@
+#!/bin/sh
+# Installed by omarchy-alarm-nspawn (host/install.sh); @PLACEHOLDERS@ are filled in at install time.
+# Shell (or command) inside the running Arch desktop container (arch-desktop) as @USER@.
+# Usage: archsh [cmd args...]    — falls back to archbox if the container isn't running.
+leader=$(machinectl show arch-desktop -p Leader --value 2>/dev/null)
+if [ -z "$leader" ]; then
+  echo "archsh: arch-desktop isn't running, using archbox" >&2
+  exec "$HOME/.local/bin/archbox" "$@"
+fi
+enter() {
+  exec sudo nsenter -t "$leader" -a env TERM="${TERM:-xterm-256color}" XDG_RUNTIME_DIR=/run/user/@UID@ \
+    WAYLAND_DISPLAY="${WAYLAND_DISPLAY:-wayland-1}" LANG=en_US.UTF-8 \
+    runuser -l '@USER@' -w TERM,XDG_RUNTIME_DIR,WAYLAND_DISPLAY,LANG "$@"
+}
+[ $# -eq 0 ] && enter
+# The single quotes are deliberate: "$@" is expanded by the shell inside the container.
+# shellcheck disable=SC2016
+enter -c 'exec "$@"' archsh "$@"

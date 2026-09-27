@@ -1,0 +1,52 @@
+#!/bin/sh
+# Installed by omarchy-alarm-nspawn (host/install.sh); @PLACEHOLDERS@ are filled in at install time.
+# Run the Arch container's Hyprland directly on the display; seatd hands it DRM/input fds.
+# SYSTEMD_NSPAWN_LOCK=0 lets archbox shells share the same rootfs concurrently.
+# /tmp is shared so Debian X11 apps started via host-run find this XWayland.
+# No GPU here, so everything renders on llvmpipe. Optional hook: a copy of Debian's Mesa in
+# /opt/debian-mesa (container path) composites faster than ALARM's Mesa on some CPUs; it is
+# used when present. `touch ~/.config/arch-use-arch-mesa` to opt out. No-op when absent.
+rootfs='@ROOTFS@'
+mesa=""
+if [ ! -e "$HOME/.config/arch-use-arch-mesa" ] && sudo test -e "$rootfs/opt/debian-mesa/lib/libgbm.so.1"; then
+  mesa="--setenv=LD_LIBRARY_PATH=/opt/debian-mesa/lib
+    --setenv=GBM_BACKENDS_PATH=/opt/debian-mesa/lib/gbm
+    --setenv=__EGL_VENDOR_LIBRARY_FILENAMES=/opt/debian-mesa/egl/50_debian_mesa.json"
+fi
+# Optional alternate Hyprland build: put its install prefix (container path, e.g.
+# /opt/hyprland-0.55) in ~/.config/arch-hyprland-prefix. Delete the file for pacman's.
+launch=/usr/bin/start-hyprland
+prefix=$(cat "$HOME/.config/arch-hyprland-prefix" 2>/dev/null)
+if [ -n "$prefix" ] && sudo test -x "$rootfs$prefix/bin/Hyprland"; then
+  launch="$prefix/bin/start-hyprland --path $prefix/bin/Hyprland"
+  mesa="$mesa --setenv=PATH=$prefix/bin:/usr/local/sbin:/usr/local/bin:/usr/bin"
+fi
+# Host home folders shared with the container (same files on both sides; the UID matches).
+# Only folders that exist on the host are bound. Empty list = --no-home-binds.
+homebinds=""
+# shellcheck disable=SC2043  # the list is filled in at install time
+for d in @HOME_BIND_DIRS@; do
+  [ -d "@HOME@/$d" ] && homebinds="$homebinds --bind=@HOME@/$d:@CHOME@/$d"
+done
+# A leftover arch-desktop (e.g. from an unclean stop) would make nspawn refuse to start.
+if machinectl show arch-desktop >/dev/null 2>&1; then
+  sudo machinectl kill arch-desktop --kill-whom=all --signal=SIGTERM  # plain terminate is ignored (--as-pid2 stub init)
+  i=0; while machinectl show arch-desktop >/dev/null 2>&1 && [ $i -lt 20 ]; do sleep 0.5; i=$((i+1)); done
+fi
+# /dev/udmabuf: llvmpipe needs it for dmabuf export and EGL_ANDROID_native_fence_sync.
+# Without it Hyprland loses explicit sync and the display shows torn/fragmented frames.
+# $mesa, $homebinds and $launch are intentionally unquoted so they split into separate words.
+# shellcheck disable=SC2086
+exec sudo SYSTEMD_NSPAWN_LOCK=0 systemd-nspawn -q -D "$rootfs" -M arch-desktop \
+  --as-pid2 --kill-signal=SIGTERM --console=pipe --resolv-conf=copy-host \
+  -u '@USER@' --chdir='@CHOME@' \
+  --bind=/dev/dri --bind=/dev/udmabuf --bind=/dev/input --bind-ro=/run/udev --bind=/run/seatd.sock \
+  --bind=/run/user/@UID@ --bind=/tmp \
+  $homebinds \
+  --property=DeviceAllow='char-drm rw' --property=DeviceAllow='char-input rw' --property=DeviceAllow='/dev/udmabuf rw' \
+  --setenv=XDG_RUNTIME_DIR=/run/user/@UID@ \
+  --setenv=DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/@UID@/bus \
+  --setenv=XDG_SESSION_TYPE=wayland --setenv=XDG_CURRENT_DESKTOP=Hyprland \
+  --setenv=XDG_SESSION_DESKTOP=Hyprland --setenv=LIBSEAT_BACKEND=seatd \
+  --setenv=LANG=en_US.UTF-8 $mesa \
+  $launch "$@"

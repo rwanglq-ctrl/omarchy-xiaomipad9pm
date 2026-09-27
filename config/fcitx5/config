@@ -1,0 +1,14 @@
+[Hotkey]
+# Enumerate when press trigger key repeatedly
+EnumerateWithTriggerKeys=True
+# Skip first input method while enumerating
+EnumerateSkipFirst=False
+
+# Toggle English/Rime with Shift alone (Ctrl+Space is the tmux prefix)
+[Hotkey/TriggerKeys]
+0=Shift_L
+1=Shift_R
+
+# Default is Shift_L, which would fight with TriggerKeys; bind to an unused key
+[Hotkey/AltTriggerKeys]
+0=

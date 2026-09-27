@@ -1,0 +1,13 @@
+#!/bin/sh
+# Installed by omarchy-alarm-nspawn (host/install.sh).
+# Choose which desktop the Android Terminal display starts: hypr-switch arch|debian [--now]
+# --now restarts the desktop immediately (closes all open windows).
+case "$1" in
+  arch|debian) ;;
+  *) echo "usage: hypr-switch arch|debian [--now]   (current: $(cat "$HOME/.config/hypr-session-mode" 2>/dev/null || echo debian))" >&2; exit 2 ;;
+esac
+mkdir -p "$HOME/.config"
+echo "$1" > "$HOME/.config/hypr-session-mode"
+echo "next desktop start: $1"
+[ "$2" = --now ] && systemctl --user restart weston.service
+exit 0
