@@ -146,6 +146,7 @@ systemctl --user daemon-reload
 - [Arch Linux ARM](https://archlinuxarm.org/) — aarch64 发行版
 - [Hyprland](https://hyprland.org/) — Wayland 合成器
 - [fcitx5](https://fcitx5.org/) + [Rime](https://rime.im/) + 雾凇拼音 — 中文输入方案
+- [Xiaomi Pad 9 Pro Max](https://www.mi.com/prod/xiaomi-pad-9-pro-max) — 本项目的测试设备，采用 Xiaomi XRING O3 最新旗舰处理器
 
 ---
 
@@ -154,7 +155,7 @@ systemctl --user daemon-reload
 **Omarchy v4.0.4 on Arch Linux ARM (aarch64), running in a systemd-nspawn container on the
 Debian 13 VM of Android 16's Linux Terminal, and shown on its display through seatd.**
 
-**Tested device**: Xiaomi Pad 9 Pro Max (Android 16 Linux Terminal, Debian 13 aarch64).
+**Tested device**: [Xiaomi Pad 9 Pro Max](https://www.mi.com/prod/xiaomi-pad-9-pro-max), powered by Xiaomi's latest flagship XRING O3 processor (Android 16 Linux Terminal, Debian 13 aarch64).
 
 ### Requirements
 
@@ -216,3 +217,4 @@ and checks that a second run changes nothing (run it from the *Actions* tab).
 
 Details: [docs/](docs/) (in Chinese). License: [MIT](LICENSE). Built on
 [Omarchy](https://github.com/basecamp/omarchy) by Basecamp.
+Thanks to the [Xiaomi Pad 9 Pro Max](https://www.mi.com/prod/xiaomi-pad-9-pro-max) with Xiaomi's latest flagship XRING O3 processor, the device this project was built and tested on.
