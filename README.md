@@ -5,6 +5,8 @@
 
 适用于 Android 16 的 Linux Terminal（AVF 虚拟机）环境。
 
+**测试设备**：Xiaomi Pad 9 Pro Max（Android 16 Linux Terminal，Debian 13 aarch64）。
+
 ---
 
 ## 层级结构
@@ -30,10 +32,10 @@
 
 ## 系统要求
 
-- **设备**: aarch64 架构（如 Pixel、ARM 服务器等）
+- **设备**: 支持 Android 16 Linux Terminal 的 aarch64 设备（已在 Xiaomi Pad 9 Pro Max 上测试）
 - **宿主系统**: Debian 13 (trixie) aarch64
 - **虚拟化**: Android 16 Linux Terminal（AVF）
-- **磁盘**: ≥ 4 GB 可用空间
+- **磁盘**: ≥ 10 GB 可用空间（`core` 档装完约 7.5 GB，含软件包缓存）
 - **网络**: 需要互联网连接（下载 Arch Linux ARM 根文件系统和软件包）
 
 ## 一键安装
