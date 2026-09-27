@@ -17,6 +17,9 @@ args=(--rm --volume "$ROOT:/src:ro" --workdir /src)
 # The full suite needs nested namespaces/mounts. Quick receives no privilege.
 if [[ $mode == --full ]]; then args+=(--privileged); fi
 docker run "${args[@]}" omarchy-alarm-test:local /bin/bash -euc '
+  # pacman 7 downloads as the sandboxed "alpm" user under Landlock, which the runner'"'"'s
+  # unprivileged Docker refuses. Disable it only in this throwaway CI container.
+  grep -q "^DisableSandbox" /etc/pacman.conf || sed -i "/^\[options\]/a DisableSandbox" /etc/pacman.conf
   pacman-key --init
   pacman-key --populate archlinuxarm
   pacman -Syu --noconfirm --needed git curl python lua sudo ripgrep jq which diffutils findutils util-linux bubblewrap systemd
