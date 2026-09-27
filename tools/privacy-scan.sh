@@ -64,9 +64,11 @@ if [[ -f "$PRIVATE_PATTERNS_FILE" ]]; then
   done < "$PRIVATE_PATTERNS_FILE"
 fi
 
-# Auto-add current $USER if ≥3 chars (word-boundary match)
+# Auto-add current $USER if ≥3 chars (word-boundary match). Generic build/CI
+# account names are not personal and appear legitimately in the test harness.
 CURRENT_USER="${USER:-}"
-if [[ ${#CURRENT_USER} -ge 3 ]]; then
+GENERIC_USERS='^(root|tester|testuser|runner|ubuntu|builder|build|user|nobody|alpm)$'
+if [[ ${#CURRENT_USER} -ge 3 && ! "$CURRENT_USER" =~ $GENERIC_USERS ]]; then
   private_patterns+=("(?<![\\w])${CURRENT_USER}(?![\\w])")
 fi
 
