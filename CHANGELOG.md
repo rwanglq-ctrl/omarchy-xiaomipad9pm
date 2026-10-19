@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.2.12 — 2026-10-19
+
+- Port the ARM container lock-screen IME fix as `patches/0007`: add
+  `omarchy-lock-ime` and call it from the Quickshell lock service, turning
+  fcitx5 off when the session lock engages and restoring the previous input
+  state after unlock. Rime pinyin preedit no longer swallows lock-screen
+  password input. The helper is a no-op when `fcitx5-remote` is missing.
+- Keep the pinned upstream Omarchy v4.0.4 base and all v0.2.11 behaviour
+  (tmux-protected install, CN mirrors, keyboard defaults, both profiles).
+
 ## 0.2.11 — 2026-10-15
 
 - Run Debian one-click installation inside the named `omarchy-install` tmux

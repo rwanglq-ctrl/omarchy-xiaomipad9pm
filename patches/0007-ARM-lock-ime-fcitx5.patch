@@ -1,0 +1,87 @@
+From 9e869b2de2b991e22330bf1d03b4a34caac1e494 Mon Sep 17 00:00:00 2001
+From: omarchy-alarm-nspawn contributors <noreply@example.com>
+Date: Mon, 19 Oct 2026 13:37:41 +0800
+Subject: [PATCH] =?UTF-8?q?ARM=20=E5=AE=B9=E5=99=A8=E7=A7=BB=E6=A4=8D?=
+ =?UTF-8?q?=EF=BC=9A=E9=94=81=E5=B1=8F=E6=97=B6=E5=85=B3=E9=97=AD=20fcitx5?=
+ =?UTF-8?q?=E3=80=81=E8=A7=A3=E9=94=81=E5=90=8E=E6=81=A2=E5=A4=8D=EF=BC=88?=
+ =?UTF-8?q?=E9=98=B2=E6=AD=A2=20Rime=20=E9=A2=84=E7=BC=96=E8=BE=91?=
+ =?UTF-8?q?=E5=90=83=E6=8E=89=E5=AF=86=E7=A0=81=E6=A1=86=E8=BE=93=E5=85=A5?=
+ =?UTF-8?q?=EF=BC=89?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ bin/omarchy-lock-ime           | 21 +++++++++++++++++++++
+ shell/plugins/lock/Service.qml | 13 +++++++++++++
+ 2 files changed, 34 insertions(+)
+ create mode 100755 bin/omarchy-lock-ime
+
+diff --git a/bin/omarchy-lock-ime b/bin/omarchy-lock-ime
+new file mode 100755
+index 00000000..47aa5cd3
+--- /dev/null
++++ b/bin/omarchy-lock-ime
+@@ -0,0 +1,21 @@
++#!/bin/bash
++
++# omarchy:summary=Turn fcitx5 off while the session is locked, restore it after unlock
++# omarchy:hidden=true
++# ARM 容器移植：Hyprland 锁屏时 input-method 仍抓着之前窗口（如 foot）的键盘，
++# Rime 开着就会把密码框的字母吃进拼音预编辑。锁屏时切英文，解锁后按原样恢复。
++
++state="${XDG_RUNTIME_DIR:-/tmp}/omarchy-lock-ime"
++command -v fcitx5-remote >/dev/null || exit 0
++
++echo "$(date +%T.%N) $1 state=$(fcitx5-remote 2>&1) im=$(fcitx5-remote -n 2>&1)" >>"${XDG_RUNTIME_DIR:-/tmp}/omarchy-lock-ime.log"
++case $1 in
++  off)
++    [[ $(fcitx5-remote 2>/dev/null) == 2 ]] && touch "$state"
++    fcitx5-remote -c 2>/dev/null
++    ;;
++  restore)
++    [[ -f $state ]] && rm -f "$state" && fcitx5-remote -o 2>/dev/null
++    ;;
++esac
++exit 0
+diff --git a/shell/plugins/lock/Service.qml b/shell/plugins/lock/Service.qml
+index 49b93e0c..c5d2d02b 100644
+--- a/shell/plugins/lock/Service.qml
++++ b/shell/plugins/lock/Service.qml
+@@ -74,6 +74,7 @@ Item {
+ 
+     pendingSessionLock = false
+     pendingSessionLockTimer.stop()
++    lockImeOffProcess.running = true
+     sessionLock.locked = true
+   }
+ 
+@@ -157,6 +158,7 @@ Item {
+     idleBlankTimer.stop()
+     sessionLock.locked = false
+     logEvent("unlocked")
++    lockImeRestoreProcess.running = true
+     runWake()
+   }
+ 
+@@ -402,6 +404,17 @@ Item {
+     }
+   }
+ 
++  // ARM 容器移植：锁屏时关闭 fcitx5，解锁后恢复，防止 Rime 预编辑吃掉密码输入
++  Process {
++    id: lockImeOffProcess
++    command: ["bash", "-c", "omarchy-lock-ime off"]
++  }
++
++  Process {
++    id: lockImeRestoreProcess
++    command: ["bash", "-c", "omarchy-lock-ime restore"]
++  }
++
+   Process {
+     id: wakeProcess
+     command: ["bash", "-c", "omarchy-system-wake"]
+-- 
+2.47.3
+
