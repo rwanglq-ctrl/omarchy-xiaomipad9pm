@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# omarchy:summary=Turn fcitx5 off while the session is locked, restore it after unlock
+# omarchy:hidden=true
+# ARM 容器移植：Hyprland 锁屏时 input-method 仍抓着之前窗口（如 foot）的键盘，
+# Rime 开着就会把密码框的字母吃进拼音预编辑。锁屏时切英文，解锁后按原样恢复。
+
+state="${XDG_RUNTIME_DIR:-/tmp}/omarchy-lock-ime"
+command -v fcitx5-remote >/dev/null || exit 0
+
+echo "$(date +%T.%N) $1 state=$(fcitx5-remote 2>&1) im=$(fcitx5-remote -n 2>&1)" >>"${XDG_RUNTIME_DIR:-/tmp}/omarchy-lock-ime.log"
+case $1 in
+  off)
+    [[ $(fcitx5-remote 2>/dev/null) == 2 ]] && touch "$state"
+    fcitx5-remote -c 2>/dev/null
+    ;;
+  restore)
+    [[ -f $state ]] && rm -f "$state" && fcitx5-remote -o 2>/dev/null
+    ;;
+esac
+exit 0
