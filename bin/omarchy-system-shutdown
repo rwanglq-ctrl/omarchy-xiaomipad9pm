@@ -12,6 +12,4 @@ omarchy-osd -i shutdown -m "Shutting down" -d 5000
 
 omarchy-state clear re*-required
 
-# Now close all windows
 omarchy-hyprland-window-close-all
-sleep 1 # Allow apps like Chrome to shutdown correctly

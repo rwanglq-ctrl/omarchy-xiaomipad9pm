@@ -1,7 +1,8 @@
 #!/bin/bash
 
-# omarchy:summary=Restart an application by killing it and relaunching via uwsm.
+# omarchy:summary=Restart an application by killing it and relaunching.
 # omarchy:args=<application-name> [application-args...]
 
-pkill -x $1
+pkill -x -- "$1"
+# ARM 容器移植：没有 uwsm，直接脱离终端启动
 setsid "$@" >/dev/null 2>&1 &

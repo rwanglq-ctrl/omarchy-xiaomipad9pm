@@ -20,12 +20,6 @@ omarchy-mise-install npm:@xai-official/grok grok
 omarchy-cmd-missing cursor-agent && omarchy-mise-install cursor-agent
 omarchy-mise-install npm:@kitlangton/ghui ghui
 omarchy-mise-install aqua:modem-dev/hunk hunk
-# Every line above writes a stub and cannot fail. This one can: it exits
-# non-zero when Hermes Desktop owns Hermes but has not finished setting it up,
-# and this leaf is sourced under `bash -eE`, so that would abort the rest of
-# omarchy-provision-user -- the default browser, the mailto handler and the
-# finalize-user marker all come after it.
-omarchy-install-hermes-cli || true
 if omarchy-cmd-missing muse; then
   omarchy-mise-install "http:muse[url=https://api.meta.ai/muse-launcher.sh,bin=muse,version_list_url=https://api.meta.ai/muse-code/channels/muse-stable,version_json_path=.version]" muse
 fi

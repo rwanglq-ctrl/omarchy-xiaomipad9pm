@@ -56,11 +56,11 @@ SH
 chmod +x "$test_tmp/bin"/*
 PATH="$test_tmp/bin:$PATH" bash -eE "$ROOT/install/user/mise.sh"
 grep -qx 'mise:settings set upgrade.auto_prune false' "$TEST_CALLS" || fail "new users retain running mise versions"
-grep -qx 'hermes:' "$TEST_CALLS" || fail "new users receive the Hermes CLI stub"
+! grep -q '^hermes:' "$TEST_CALLS" || fail "provisioning leaves Hermes to the default agent choice"
 grep -qx 'stub:cursor-agent' "$TEST_CALLS" || fail "new users receive the selected Cursor CLI stub"
 grep -Fx 'stub:http:muse[url=https://api.meta.ai/muse-launcher.sh,bin=muse,version_list_url=https://api.meta.ai/muse-code/channels/muse-stable,version_json_path=.version] muse' "$TEST_CALLS" >/dev/null || fail "new users receive the selected official Muse launcher stub"
 ! grep -Eq 'stub:.*(ori|antigravity|hey-cli)' "$TEST_CALLS" || fail "mise setup avoids unrelated prerequisites"
-pass "baseline mise setup tolerates an unfinished Hermes Desktop and disables pruning"
+pass "baseline mise setup leaves Hermes to the default agent and disables pruning"
 : >"$TEST_CALLS"
 PATH="$test_tmp/bin:$PATH" bash -euo pipefail "$ROOT/migrations/1787215483.sh" >/dev/null
 grep -qx 'mise:settings set upgrade.auto_prune false' "$TEST_CALLS" || fail "existing users retain running mise versions"

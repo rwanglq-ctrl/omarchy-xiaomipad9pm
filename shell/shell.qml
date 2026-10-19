@@ -1,9 +1,11 @@
+//@ pragma OmarchyLoadPatch
 import QtQuick
 import QtQml.Models
 import Quickshell
 import Quickshell.Io
 
 import qs.Commons
+import qs.Commons as Commons
 
 import "plugins/bar"
 import "services"
@@ -317,7 +319,8 @@ ShellRoot {
     if (!manifest) return null
     if (manifest.__isFirstParty) return manifest
     var copy = JSON.parse(JSON.stringify(manifest))
-    delete copy.__sourceDir
+    // Keep __sourceDir: third-party plugins find their bundled scripts through it.
+    // Only the host trust markers are withheld.
     delete copy.__isFirstParty
     delete copy.__hostCapabilities
     return copy
@@ -1594,8 +1597,8 @@ ShellRoot {
       var shellRaw = ""
       try { colorsRaw = Qt.atob(String(colorsB64 || "")) } catch (e) { colorsRaw = "" }
       try { shellRaw = Qt.atob(String(shellB64 || "")) } catch (e2) { shellRaw = "" }
-      Color.loadColors(colorsRaw)
-      Color.loadShell(shellRaw)
+      Commons.Color.loadColors(colorsRaw)
+      Commons.Color.loadShell(shellRaw)
       Style.scheduleRefresh()
       return "ok"
     }

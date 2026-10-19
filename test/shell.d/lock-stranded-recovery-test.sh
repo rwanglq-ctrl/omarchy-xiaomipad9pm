@@ -15,8 +15,8 @@ assert(
 )
 
 assert(
-  /id: strandedLockCheckProc[\s\S]*omarchy-hyprland-session-locked/.test(serviceQml),
-  'the startup check goes through the shared session lock helper'
+  /id: strandedLockCheckProc[\s\S]*omarchy-hyprland-session-lock-stranded \\"\$PPID\\"/.test(serviceQml),
+  'the startup check asks whether a lock has no live locker, skipping this shell'
 )
 
 // "No output to read" taken for "unlocked" leaves the failsafe up for good.

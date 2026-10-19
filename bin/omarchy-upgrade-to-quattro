@@ -965,7 +965,7 @@ populate_legacy_hypr_defaults() {
     tmp_dir=$(mktemp -d)
     archive_dir="$tmp_dir/archive"
     mkdir -p "$archive_dir"
-    if curl -fsSL https://github.com/basecamp/omarchy/archive/refs/heads/master.tar.gz | tar -xz -C "$archive_dir" &&
+    if curl -fsSL https://github.com/omacom/omarchy/archive/refs/heads/master.tar.gz | tar -xz -C "$archive_dir" &&
       [[ -d $archive_dir/omarchy-master/default/hypr ]]; then
       cp -a "$archive_dir/omarchy-master/default/hypr/." "$shim_hypr_dir/"
     fi
@@ -2224,7 +2224,7 @@ if command -v update-desktop-database >/dev/null 2>&1; then
   update-desktop-database "$HOME/.local/share/applications" >/dev/null 2>&1 || true
 fi
 if command -v xdg-settings >/dev/null 2>&1; then
-  env -u BROWSER xdg-settings set default-web-browser chromium.desktop || true
+  env -u BROWSER XDG_CURRENT_DESKTOP= xdg-settings set default-web-browser chromium.desktop || true
 fi
 if command -v xdg-mime >/dev/null 2>&1; then
   xdg-mime default HEY.desktop x-scheme-handler/mailto || true

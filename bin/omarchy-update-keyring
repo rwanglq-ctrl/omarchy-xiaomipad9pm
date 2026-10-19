@@ -15,8 +15,10 @@ if omarchy-pkg-missing omarchy-keyring || ! sudo pacman-key --list-keys 40DFB630
   sudo pacman-key --list-keys 40DFB630FF42BCFFB047046CF0134EE680CAC571
 fi
 
-# Ensure we have the latest archlinux-keyring, maintainer keys might have changed
-# Always reinstall, as the keyring can be updated without a package version bump.
+# Ensure we have the latest archlinux-keyring, maintainer keys might have changed.
+# --needed installs only a newer keyring: new or revoked keys reach the repos
+# as a new package version, and an installed version was populated when it
+# went in, so reinstalling the same one only repeats that populate.
 echo -e "\e[32m\nUpdate Arch signing keys\e[0m"
-sudo pacman -Sy --noconfirm archlinux-keyring >/dev/null 2> >(grep -vE '^warning: archlinux-keyring-[^ ]+ is up to date -- reinstalling$' >&2)
+sudo pacman -Sy --needed --noconfirm archlinux-keyring >/dev/null 2> >(grep -vE '^warning: archlinux-keyring-[^ ]+ is up to date -- skipping$' >&2)
 echo "Keys are correct"

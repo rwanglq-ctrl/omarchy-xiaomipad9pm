@@ -124,7 +124,7 @@ assert(initial['acme.transient'].destroyCount === 1
   && f.context.serviceFor('acme.transient') !== initial['acme.transient'],
   'ordinary services without keepLoaded are replaced on rescan')
 assert(!('__hostCapabilities' in initial['acme.lock'].manifest)
-  && !('__sourceDir' in initial['acme.lock'].manifest),
+  && initial['acme.lock'].manifest.__sourceDir === f.registry.installedPlugins['acme.lock'].__sourceDir,
   'kept authentication clones receive detached public manifests')
 initial['acme.lock'].manifest.name = 'plugin-local edit'
 assert(f.registry.installedPlugins['acme.lock'].name === 'Refreshed acme.lock',

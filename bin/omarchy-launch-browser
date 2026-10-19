@@ -3,10 +3,7 @@
 # omarchy:summary=Launch the default browser as determined by xdg-settings.
 # omarchy:args=[url]
 
-default_browser=$(env -u BROWSER xdg-settings get default-web-browser)
-if [[ -z $default_browser ]]; then
-  default_browser=$(xdg-mime query default x-scheme-handler/https)
-fi
+default_browser=$(omarchy-cmd-default-browser)
 browser_exec=$(sed -n 's/^Exec=\([^ ]*\).*/\1/p' {~/.local,~/.nix-profile,/usr}/share/applications/$default_browser 2>/dev/null | head -1)
 
 if $browser_exec --help 2>/dev/null | grep -q MOZ_LOG; then
@@ -17,8 +14,10 @@ else
   private_flag="--incognito"
 fi
 
-# ARM 容器移植：没有 systemd --user，直接脱离终端启动
-setsid "$browser_exec" "${@/--private/$private_flag}" >/dev/null 2>&1 &
+# ARM 容器移植：没有 systemd --user / uwsm。已在跑的浏览器仍走交接，否则直接脱离终端启动。
+if ! omarchy-cmd-browser-handoff "$browser_exec" "${@/--private/$private_flag}"; then
+  setsid "$browser_exec" "${@/--private/$private_flag}" >/dev/null 2>&1 &
+fi
 
 url=""
 for argument in "$@"; do
