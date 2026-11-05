@@ -9,7 +9,7 @@ echo "Installing Claude..."
 omarchy-pkg-add claude-desktop
 
 echo "Opening Claude..."
-setsid uwsm-app -- /usr/bin/claude-desktop >/dev/null 2>&1 &
+setsid /usr/bin/claude-desktop >/dev/null 2>&1 &
 
 echo ""
 echo "Claude has been installed."

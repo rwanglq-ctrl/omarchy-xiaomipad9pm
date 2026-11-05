@@ -31,6 +31,8 @@ POLICY_DIRS=(
 # runs from there rather than from whichever copy was invoked, so the rule
 # matches even where $OMARCHY_PATH points at a checkout.
 PACKAGED_PATH=/usr/bin/omarchy-theme-set-browser-policy
+# ARM 容器移植：git 树装在 OMARCHY_PATH/bin，没有 /usr/bin 打包副本，回退到脚本自身路径。
+[[ -e $PACKAGED_PATH ]] || PACKAGED_PATH="$(readlink -f "${BASH_SOURCE[0]}")"
 
 usage() {
   echo "Usage: omarchy-theme-set-browser-policy <rrggbb>" >&2
