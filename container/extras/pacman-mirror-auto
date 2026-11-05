@@ -1,0 +1,96 @@
+#!/bin/bash
+# pacman-mirror-auto: keep the Arch Linux ARM mirrors ordered by measured speed,
+# so pacman is fast in the US and in China without edits.
+#
+# v2: 不再用 Google/Baidu 可达性猜"地理位置" —— 透明代理（ts-proxy / 公司网关）
+# 会让 Google 探测假可达，把慢速官方源排到第一位，pacman 下载反复卡死。
+# 现在直接对每个镜像的仓库数据库做 HEAD 计时，按真实延迟排序；都不可达则不动。
+#
+#   pacman-mirror-auto                    measure once, rewrite /etc/pacman.d/mirrorlist if needed
+#   pacman-mirror-auto --apply overseas|china   兼容旧接口：overseas=官方优先, china=国内优先
+#   pacman-mirror-auto --status           show measurements and current order
+#
+# net-location calls this every minute.
+
+set -u
+MIRRORLIST=/etc/pacman.d/mirrorlist
+BACKUP=/etc/pacman.d/mirrorlist.pre-auto
+LOG="$HOME/.local/state/ts-proxy/pacman-mirror.log"
+ARCH="$(uname -m)"
+
+# (label|base) —— 探针用 $base/$ARCH/core/core.db，Server 行用 $base/$arch/$repo
+MIRRORS=(
+  "USTC|https://mirrors.ustc.edu.cn/archlinuxarm"
+  "TUNA|https://mirrors.tuna.tsinghua.edu.cn/archlinuxarm"
+  "OFFICIAL|http://mirror.archlinuxarm.org"
+)
+
+mkdir -p "$(dirname "$LOG")"
+
+# 计时一个镜像的仓库数据库 HEAD；返回秒（保留 3 位），超时/失败返回空
+latency() {
+  curl -s --noproxy '*' -m 8 -o /dev/null \
+    -w '%{time_total}' -I "$1/$ARCH/core/core.db" 2>/dev/null | grep -E '^[0-9]+(\.[0-9]+)?$'
+}
+
+measure() {
+  local entry label server t
+  for entry in "${MIRRORS[@]}"; do
+    label=${entry%%|*} server=${entry#*|}
+    t=$(latency "$server")
+    [[ -n $t ]] && printf '%s %s %s\n' "$t" "$label" "$server"
+  done | sort -n
+}
+
+render_lines() {
+  # stdin: measure() 的输出；按延迟升序渲染 Server 行
+  local t label server
+  echo "# Managed by ~/.local/bin/pacman-mirror-auto (speed-ranked) — rewritten automatically,"
+  echo "# edit the script instead. Original list: $BACKUP"
+  while read -r t label server; do
+    [[ -n $label ]] || continue
+    echo "# $label latency ${t}s"
+    printf 'Server = %s/$arch/$repo\n' "$server"
+  done
+}
+
+apply_once() {
+  local mode=${1:-} want measured
+  measured=$(measure)
+  if [[ $mode == overseas ]]; then
+    want=$(printf '%s\n' "# Managed by ~/.local/bin/pacman-mirror-auto (forced overseas)" \
+      "# $BACKUP" \
+      "Server = http://mirror.archlinuxarm.org/\$arch/\$repo" \
+      "Server = https://mirrors.ustc.edu.cn/archlinuxarm/\$arch/\$repo")
+  elif [[ $mode == china ]]; then
+    want=$(printf '%s\n' "# Managed by ~/.local/bin/pacman-mirror-auto (forced china)" \
+      "# $BACKUP" \
+      "Server = https://mirrors.ustc.edu.cn/archlinuxarm/\$arch/\$repo" \
+      "Server = https://mirrors.tuna.tsinghua.edu.cn/archlinuxarm/\$arch/\$repo" \
+      "Server = http://mirror.archlinuxarm.org/\$arch/\$repo")
+  else
+    [[ -n $measured ]] || return 0   # 全部不可达：保持现状（离线）
+    want=$(printf '%s\n' "$measured" | render_lines)
+  fi
+
+  [[ $(cat "$MIRRORLIST" 2>/dev/null) == "$want" ]] && return 0
+  [[ -f $BACKUP ]] || sudo -n cp -p "$MIRRORLIST" "$BACKUP"
+  printf '%s\n' "$want" | sudo -n tee "$MIRRORLIST" >/dev/null &&
+    echo "$(date '+%F %T') ${mode:-speed} → $(grep -m1 '^Server' <<<"$want")" >>"$LOG"
+}
+
+case "${1:-}" in
+  --apply)
+    apply_once "${2:-}"
+    ;;
+  --status)
+    echo "镜像延迟实测:"
+    measure | awk '{printf "  %-9s %ss\n", $2, $1}'
+    [[ -z $(measure) ]] && echo "  （全部不可达）"
+    echo "当前首选镜像: $(grep -m1 '^Server' "$MIRRORLIST")"
+    [[ -f $LOG ]] && { echo "最近切换记录:"; tail -3 "$LOG"; }
+    ;;
+  *)
+    apply_once
+    ;;
+esac
