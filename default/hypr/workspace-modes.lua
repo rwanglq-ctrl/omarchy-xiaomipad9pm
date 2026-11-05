@@ -105,12 +105,7 @@ local function place(window)
     width, height = height, width
   end
 
-  -- ARM 容器移植：Hyprland 0.55 的 reserved 可能是整数或 CssGap（字段可缺）。
-  local reserved = monitor.reserved
-  if type(reserved) == "number" then
-    reserved = { top = reserved, bottom = reserved, left = reserved, right = reserved }
-  end
-  reserved = reserved or {}
+  local reserved = monitor.reserved or {}
   width = width - (reserved.left or 0) - (reserved.right or 0)
   height = height - (reserved.top or 0) - (reserved.bottom or 0)
 

@@ -104,14 +104,9 @@ local function fit(monitor)
 
   -- Monitor dimensions are in physical pixels; gaps are logical, so the scale
   -- has to come out before the reserved area (already logical) comes off.
-  -- ARM 容器移植：Hyprland 0.55 的 reserved 可能是整数或 CssGap（字段可缺）。
   local reserved = monitor.reserved
-  if type(reserved) == "number" then
-    reserved = { top = reserved, bottom = reserved, left = reserved, right = reserved }
-  end
-  reserved = reserved or {}
-  height = height / monitor.scale - (reserved.top or 0) - (reserved.bottom or 0)
-  width = width / monitor.scale - (reserved.left or 0) - (reserved.right or 0)
+  height = height / monitor.scale - reserved.top - reserved.bottom
+  width = width / monitor.scale - reserved.left - reserved.right
 
   local tall = math.floor(height * share)
   local wide = width
@@ -140,10 +135,7 @@ local function refit(monitor)
   if fit(monitor or console_monitor()) then
     -- Land the new gaps in this pass rather than a frame later, so the console
     -- does not visibly resize itself once it has already dropped down.
-    -- ARM 容器移植：Hyprland 0.55 尚无此 API，下帧刷新也可接受。
-    if hl.exec_scheduled_prop_refresh_immediately then
-      hl.exec_scheduled_prop_refresh_immediately()
-    end
+    hl.exec_scheduled_prop_refresh_immediately()
   end
 end
 
@@ -165,9 +157,7 @@ end)
 -- Special workspaces open on the monitor they are toggled on, not on whichever
 -- output last happened to be focused when the rule was written, so these two
 -- take the monitor they are handed rather than looking one up.
--- ARM 容器移植：Hyprland 0.55 尚无 workspace.special_active 事件，改用
--- workspace.active 覆盖特殊工作区切换（名称检查后同样 refit）。
-hl.on("workspace.active", function(ws, mon)
+hl.on("workspace.special_active", function(ws, mon)
   if ws and ws.name == CONSOLE then
     refit(mon)
   end
