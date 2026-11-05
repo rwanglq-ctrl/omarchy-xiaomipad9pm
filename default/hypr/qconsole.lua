@@ -104,9 +104,9 @@ local function fit(monitor)
 
   -- Monitor dimensions are in physical pixels; gaps are logical, so the scale
   -- has to come out before the reserved area (already logical) comes off.
-  local reserved = monitor.reserved
-  height = height / monitor.scale - reserved.top - reserved.bottom
-  width = width / monitor.scale - reserved.left - reserved.right
+  local reserved = monitor.reserved or {}
+  height = height / monitor.scale - (reserved.top or 0) - (reserved.bottom or 0)
+  width = width / monitor.scale - (reserved.left or 0) - (reserved.right or 0)
 
   local tall = math.floor(height * share)
   local wide = width
@@ -157,7 +157,9 @@ end)
 -- Special workspaces open on the monitor they are toggled on, not on whichever
 -- output last happened to be focused when the rule was written, so these two
 -- take the monitor they are handed rather than looking one up.
-hl.on("workspace.special_active", function(ws, mon)
+-- ARM 容器移植：Hyprland 0.55 尚无 workspace.special_active 事件，改用
+-- workspace.active 覆盖特殊工作区切换（名称检查后同样 refit）。
+hl.on("workspace.active", function(ws, mon)
   if ws and ws.name == CONSOLE then
     refit(mon)
   end
